@@ -1,12 +1,12 @@
 """A minimal host for the seam run: cms with the real cdn, forms, translate and core's sitemap.
 
-Not part of the package. ``make seam`` boots it on a throwaway database
-(``SEAM_DB``) and drives ``e2e/seam_run.py``.
+Not part of the package. Its database and media live in the directory it is
+run from: ``make seam`` runs it inside a fresh temporary directory and drives
+``e2e/seam_run.py``.
 """
-import os
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent.parent
+DATA = Path.cwd()
 SECRET_KEY = "seam-run-only"
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
@@ -18,12 +18,12 @@ INSTALLED_APPS = [
     "stapel_cdn", "stapel_forms", "stapel_translate", "stapel_cms",
 ]
 AUTH_USER_MODEL = "users.User"
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": os.environ.get("SEAM_DB", str(BASE / "db.sqlite3"))}}
+DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": str(DATA / "db.sqlite3")}}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 USE_TZ = True
 ROOT_URLCONF = "seamhost.urls"
 STATIC_URL = "/static/"
-MEDIA_ROOT = os.environ.get("SEAM_MEDIA", str(BASE / "media"))
+MEDIA_ROOT = str(DATA / "media")
 MEDIA_URL = "/media/"
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
 STAPEL_BUS_BACKEND = "stapel_core.bus.backends.memory.MemoryBus"
