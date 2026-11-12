@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.post.unpublished",
+  "description": "A public post was archived. Key = post id.",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "post_id",
+    "site",
+    "locale",
+    "path"
+  ],
+  "additionalProperties": false
+}

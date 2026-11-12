@@ -1,0 +1,134 @@
+{
+  "_comment": "Hand-curated layer of docs/capabilities.json. The emitter (stapel_cms/_capabilities.py) merges this over the derived axes; an axis in conf.py DEFAULTS marked as an axis but missing here (or vice versa) is a loud emission error. surface_roots + surface are the usage layer: every public function of the selected modules carries an intent line here.",
+  "maturity": "alpha",
+  "provides": "Public site content for a Stapel product: pages in a slug tree, a blog (posts, tags, date and tag archives, RSS/Atom), menus (header/footer trees targeting pages, posts, URLs or named frontend routes), SEO fields and a sitemap Function, and redirects written automatically when a published page or post moves. Bodies are typed block lists (rich_text as a ProseMirror/TipTap JSON document, hero, faq, gallery, embed with a host allowlist, a stapel-forms form by id, an opaque listing_rail query) validated by pydantic models from a MERGE registry, so a project adds its own block without forking. Staff write drafts, preview them by a signed link, publish now or on a schedule, keep editing while the published snapshot serves, restore revisions and archive; every publication is a fact. Content is site-scoped through the stapel-core site registry and locale-scoped with a fallback chain; a page can be copied into another locale, optionally through a machine-translation Function. The anonymous read is cached per site and answers conditional requests (ETag, Last-Modified). Not stapel-docs: docs is private workspace documents; cms is what an anonymous visitor reads at a URL of the site.",
+  "requires": [
+    {
+      "module": "stapel-core",
+      "optional": false,
+      "reason": "comm bus (cms.* facts, sitemap/resolve/feed Functions, user.merged consumer), site registry, AnchorPagination, GDPR owner protocol, @access, AppSettings"
+    },
+    {
+      "module": "stapel-cdn",
+      "optional": true,
+      "reason": "media references are cdn refs (<type>/<id>); cdn.refs_sync keeps pictures used by content from being swept as unclaimed"
+    },
+    {
+      "module": "stapel-forms",
+      "optional": true,
+      "reason": "the form block embeds a stapel-forms form by its public_id"
+    },
+    {
+      "module": "stapel-translate",
+      "optional": true,
+      "reason": "a content translation Function behind MACHINE_TRANSLATE copies a page into another locale machine-translated (upstream ask T1)"
+    }
+  ],
+  "extension_points": [
+    {
+      "name": "BLOCK_TYPES",
+      "kind": "merge_registry",
+      "summary": "Block types a page or post body may contain: {'<type>': 'dotted.path.PydanticModel' | None} merged over the built-ins (rich_text, hero, faq, gallery, embed, form, listing_rail); None removes a built-in. A project's own block is a pydantic model (stapel_cms.blocks.BlockData, extra='forbid'); its JSON schema reaches the staff editor through GET staff/block-types/."
+    },
+    {
+      "name": "EMBED_HOSTS",
+      "kind": "setting",
+      "summary": "Hosts an embed block may point at (exact host, https only). Replace the list to allow another provider."
+    },
+    {
+      "name": "MACHINE_TRANSLATE",
+      "kind": "strategy",
+      "summary": "Name of a comm Function {texts, source, target} -> {texts} used when staff copy a page into another locale with machine_translate. Empty = off; unreachable or malformed answers are a 503, never an untranslated copy."
+    },
+    {
+      "name": "MEDIA_REFS_FUNCTION",
+      "kind": "strategy",
+      "summary": "comm Function that tracks which media content uses (default cdn.refs_sync); empty disables. Best-effort after commit."
+    },
+    {
+      "name": "STAPEL_CMS_PUBLIC_PRESENTER / STAPEL_CMS_STAFF_PRESENTER",
+      "kind": "presenter",
+      "summary": "Swap keys (STAPEL_SWAP) for the public and staff presenters, so a host changes what the API shows without forking a view."
+    },
+    {
+      "name": "cms.page.published",
+      "kind": "comm_event",
+      "summary": "A page snapshot went live (now or at its scheduled time): site, locale, path, revision, translation group. CDN purge, search indexing and sitemap pings subscribe."
+    },
+    {
+      "name": "cms.post.published",
+      "kind": "comm_event",
+      "summary": "A blog post went live: path, tags, the staff author id."
+    },
+    {
+      "name": "cms.redirect.created",
+      "kind": "comm_event",
+      "summary": "A published page or post moved (or staff added a redirect): old_path -> new_path."
+    },
+    {
+      "name": "cms.sitemap_entries",
+      "kind": "comm_function",
+      "summary": "Published, indexable pages and posts of a site with hreflang alternates, keyset-paged: what a sitemap aggregator asks."
+    }
+  ],
+  "axes": {
+    "BLOG_ENABLED": {
+      "business_label": "Blog",
+      "summary": "true (default): the site has a blog — posts, tags, monthly and tag archives, an RSS/Atom feed. false: pages, menus and redirects only. Values: true, false.",
+      "behavior": "true: the public posts/tags/archive/feed routes and the staff posts/tags routes are mounted, and paths under BLOG_PATH_PREFIX/ are reserved for posts; false: those routes are not mounted."
+    },
+    "STAFF_AUTHZ": {
+      "business_label": "Who may edit the site",
+      "summary": "staff (default): every staff account may edit pages, posts and menus. model_perms: a staff account also needs the per-model permission its role grants (the @access mandate), e.g. to let marketing edit posts but not legal pages' menus. Values: staff, model_perms.",
+      "behavior": "staff: the staff API checks is_staff; model_perms: it also asks has_perm('cms.<view|add|change|delete>_<model>') for the model each route touches."
+    }
+  },
+  "surface_roots": [
+    {
+      "select": "functions",
+      "path": "blocks.py"
+    }
+  ],
+  "surface": {
+    "register_block_type": {
+      "kind": "factory",
+      "intent": "Add a project's own block type (a pydantic model) from an AppConfig.ready(), or remove a built-in with None. The settings dict STAPEL_CMS['BLOCK_TYPES'] is the other door; both merge over the built-ins."
+    },
+    "reset_block_types": {
+      "kind": "factory",
+      "intent": "Drop runtime block registrations, leaving settings untouched — a test lever."
+    },
+    "get_block_types": {
+      "kind": "predicate",
+      "intent": "The effective block registry (built-ins <- settings <- runtime). Ask it instead of reading the setting."
+    },
+    "block_model": {
+      "kind": "predicate",
+      "intent": "The pydantic model of one block type; KeyError when it is not registered."
+    },
+    "validate_blocks": {
+      "kind": "gate_function",
+      "intent": "Validate a block list ({type, id, data}) and return its normalised JSON; raises BlockError with the error key. The staff API runs every save through it."
+    },
+    "block_type_schemas": {
+      "kind": "predicate",
+      "intent": "[{type, schema}] for every registered block type — what GET staff/block-types/ serves to the editor."
+    },
+    "iter_text": {
+      "kind": "predicate",
+      "intent": "Every human-text string inside blocks (headings, labels, text nodes, alt), skipping URLs, media refs and opaque queries: the word count and the translation batch read this."
+    },
+    "map_text": {
+      "kind": "factory",
+      "intent": "A copy of blocks with every human-text string replaced by fn(text) — how a machine translation is applied without touching URLs or ids."
+    },
+    "media_refs": {
+      "kind": "predicate",
+      "intent": "Every cdn media reference used inside blocks."
+    },
+    "word_count": {
+      "kind": "predicate",
+      "intent": "Words in the human text of a block list (reading time)."
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.post.published",
+  "description": "A blog post snapshot went live. tags are slugs; author_id is the staff author (the only personal id cms emits). Key = post id.",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "published_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "first": {
+      "type": "boolean"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "author_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "post_id",
+    "site",
+    "locale",
+    "path",
+    "revision",
+    "published_at",
+    "first",
+    "tags",
+    "author_id"
+  ],
+  "additionalProperties": false
+}

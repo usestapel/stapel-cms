@@ -1,0 +1,3984 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/cms/api/v1/public/feed/": {
+      "get": {
+        "operationId": "cms_public_feed",
+        "description": "RSS 2.0 or Atom feed of the latest posts.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "atom",
+                "rss"
+              ]
+            },
+            "description": "Feed type (default rss)."
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/rss+xml": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/atom+xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/menus/{key}/": {
+      "get": {
+        "operationId": "cms_public_menus_retrieve",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicMenu"
+                }
+              }
+            },
+            "description": ""
+          },
+          "304": {
+            "description": "Not modified"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/post-archive/": {
+      "get": {
+        "operationId": "cms_public_post_archive",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostArchiveResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "304": {
+            "description": "Not modified"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/posts/": {
+      "get": {
+        "operationId": "cms_public_posts_list",
+        "description": "The blog: latest published posts, newest first; by tag or month.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 12, max 50."
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          },
+          {
+            "in": "query",
+            "name": "month",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Archive month."
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tag slug."
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Archive year."
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPostPage"
+                }
+              }
+            },
+            "description": ""
+          },
+          "304": {
+            "description": "Not modified"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/posts/{slug}/": {
+      "get": {
+        "operationId": "cms_public_posts_retrieve",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          },
+          {
+            "in": "path",
+            "name": "slug",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPost"
+                }
+              }
+            },
+            "description": ""
+          },
+          "304": {
+            "description": "Not modified"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/preview/": {
+      "get": {
+        "operationId": "cms_public_preview",
+        "description": "A draft's working copy, unlocked by a signed preview token.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token from staff preview-token.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/resolve/": {
+      "get": {
+        "operationId": "cms_public_resolve",
+        "description": "What lives at a path: a page, a post or a redirect.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The site path, e.g. /about/team.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "304": {
+            "description": "Not modified"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/public/tags/": {
+      "get": {
+        "operationId": "cms_public_tags_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `AllowAny`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Requested locale; the fallback chain ends at DEFAULT_LOCALE."
+          }
+        ],
+        "tags": [
+          "CMS public"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicTagList"
+                }
+              }
+            },
+            "description": ""
+          },
+          "304": {
+            "description": "Not modified"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/block-types/": {
+      "get": {
+        "operationId": "cms_staff_block_types",
+        "description": "Every registered block type with its data JSON Schema (for the editor).\n\n**Permissions:** `CmsStaffPermission`",
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockTypeList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/menus/": {
+      "get": {
+        "operationId": "cms_staff_menus_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Locale."
+          },
+          {
+            "in": "query",
+            "name": "site",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site key."
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffMenuPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "cms_staff_menus_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffMenuCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffMenuCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffMenuCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffMenu"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/menus/{menu_id}/": {
+      "get": {
+        "operationId": "cms_staff_menus_retrieve",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "menu_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffMenu"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "operationId": "cms_staff_menus_replace",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "menu_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffMenuReplaceRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffMenuReplaceRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffMenuReplaceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffMenu"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "cms_staff_menus_destroy",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "menu_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/": {
+      "get": {
+        "operationId": "cms_staff_pages_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Locale."
+          },
+          {
+            "in": "query",
+            "name": "parent",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Parent page id, or 'root' for top level."
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Title contains."
+          },
+          {
+            "in": "query",
+            "name": "site",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site key."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "archived",
+                  "draft",
+                  "published",
+                  "scheduled"
+                ]
+              }
+            },
+            "description": "Filter by status (repeatable)."
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPagePage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "cms_staff_pages_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffPageCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffPageCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffPageCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/{obj_id}/": {
+      "get": {
+        "operationId": "cms_staff_pages_retrieve",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "operationId": "cms_staff_pages_update",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffPageUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffPageUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffPageUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "cms_staff_pages_destroy",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/{obj_id}/preview-token/": {
+      "post": {
+        "operationId": "cms_staff_pages_preview_token",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewTokenResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/{obj_id}/revisions/": {
+      "get": {
+        "operationId": "cms_staff_pages_revisions_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevisionPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/{obj_id}/revisions/{number}/restore/": {
+      "post": {
+        "operationId": "cms_staff_pages_revisions_restore",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/{obj_id}/transition/": {
+      "post": {
+        "operationId": "cms_staff_pages_transition",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/pages/{obj_id}/variants/": {
+      "post": {
+        "operationId": "cms_staff_pages_variant_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VariantRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/VariantRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/VariantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/": {
+      "get": {
+        "operationId": "cms_staff_posts_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Locale."
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Title contains."
+          },
+          {
+            "in": "query",
+            "name": "site",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site key."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "archived",
+                  "draft",
+                  "published",
+                  "scheduled"
+                ]
+              }
+            },
+            "description": "Filter by status (repeatable)."
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPostPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "cms_staff_posts_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffPostCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffPostCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffPostCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPost"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/{obj_id}/": {
+      "get": {
+        "operationId": "cms_staff_posts_retrieve",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPost"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "operationId": "cms_staff_posts_update",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffPostUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffPostUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffPostUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPost"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "cms_staff_posts_destroy",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/{obj_id}/preview-token/": {
+      "post": {
+        "operationId": "cms_staff_posts_preview_token",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewTokenResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/{obj_id}/revisions/": {
+      "get": {
+        "operationId": "cms_staff_posts_revisions_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevisionPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/{obj_id}/revisions/{number}/restore/": {
+      "post": {
+        "operationId": "cms_staff_posts_revisions_restore",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPost"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/{obj_id}/transition/": {
+      "post": {
+        "operationId": "cms_staff_posts_transition",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TransitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPost"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/posts/{obj_id}/variants/": {
+      "post": {
+        "operationId": "cms_staff_posts_variant_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "obj_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VariantRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/VariantRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/VariantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffPost"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/redirects/": {
+      "get": {
+        "operationId": "cms_staff_redirects_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Locale."
+          },
+          {
+            "in": "query",
+            "name": "site",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site key."
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffRedirectPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "cms_staff_redirects_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffRedirectCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffRedirectCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffRedirectCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffRedirect"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/redirects/{redirect_id}/": {
+      "delete": {
+        "operationId": "cms_staff_redirects_destroy",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "redirect_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/tags/": {
+      "get": {
+        "operationId": "cms_staff_tags_list",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "anchor",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque anchor from next_anchor/prev_anchor (exclusive)."
+          },
+          {
+            "in": "query",
+            "name": "direction",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "next",
+                "prev"
+              ]
+            },
+            "description": "Walk direction from the anchor."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size, default 50, max 200."
+          },
+          {
+            "in": "query",
+            "name": "locale",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Locale."
+          },
+          {
+            "in": "query",
+            "name": "site",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site key."
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffTagPage"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "cms_staff_tags_create",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffTagCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffTagCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffTagCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffTag"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cms/api/v1/staff/tags/{tag_id}/": {
+      "patch": {
+        "operationId": "cms_staff_tags_update",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffTagUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffTagUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedStaffTagUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffTag"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "cms_staff_tags_destroy",
+        "description": "Renders a service refusal as the fleet error envelope.\n\n**Permissions:** `CmsStaffPermission`",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "CMS staff"
+        ],
+        "security": [
+          {
+            "JWTCookieAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Alternate": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "locale",
+          "path"
+        ]
+      },
+      "ArchiveMonth": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer"
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12,
+            "minimum": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "count",
+          "month",
+          "year"
+        ]
+      },
+      "Block": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "maxLength": 48
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "data",
+          "id",
+          "type"
+        ]
+      },
+      "BlockType": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "maxLength": 48
+          },
+          "schema": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "JSON Schema of the block's data (pydantic model_json_schema)."
+          }
+        },
+        "required": [
+          "schema",
+          "type"
+        ]
+      },
+      "BlockTypeList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BlockType"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "Breadcrumb": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "path",
+          "title"
+        ]
+      },
+      "CmsMenuTargetEnum": {
+        "enum": [
+          "page",
+          "post",
+          "url",
+          "route"
+        ],
+        "type": "string",
+        "description": "* `page` - Page\n* `post` - Post\n* `url` - URL\n* `route` - Named route"
+      },
+      "CmsRedirectSourceEnum": {
+        "enum": [
+          "auto",
+          "manual"
+        ],
+        "type": "string",
+        "description": "* `auto` - Written on a path change\n* `manual` - Added by staff"
+      },
+      "CmsResolveKindEnum": {
+        "enum": [
+          "page",
+          "post",
+          "redirect"
+        ],
+        "type": "string",
+        "description": "* `page` - page\n* `post` - post\n* `redirect` - redirect"
+      },
+      "CmsStatusEnum": {
+        "enum": [
+          "draft",
+          "scheduled",
+          "published",
+          "archived"
+        ],
+        "type": "string",
+        "description": "* `draft` - Draft\n* `scheduled` - Scheduled\n* `published` - Published\n* `archived` - Archived"
+      },
+      "MenuItemInput": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "target_type": {
+            "$ref": "#/components/schemas/CmsMenuTargetEnum"
+          },
+          "page": {
+            "type": "integer",
+            "nullable": true
+          },
+          "post": {
+            "type": "integer",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "route": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 100
+          },
+          "route_params": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "new_tab": {
+            "type": "boolean",
+            "default": false
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuItemInput"
+            }
+          }
+        },
+        "required": [
+          "label",
+          "target_type"
+        ]
+      },
+      "PatchedStaffPageUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "maxItems": 1000
+          },
+          "seo_title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "seo_description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The version this editor read (optimistic lock)."
+          },
+          "parent": {
+            "type": "integer",
+            "nullable": true
+          },
+          "template": {
+            "type": "string",
+            "maxLength": 64
+          }
+        }
+      },
+      "PatchedStaffPostUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "maxItems": 1000
+          },
+          "seo_title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "seo_description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The version this editor read (optimistic lock)."
+          },
+          "excerpt": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "cover": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 50
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "PatchedStaffTagUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          }
+        }
+      },
+      "PostArchiveResponse": {
+        "type": "object",
+        "properties": {
+          "months": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArchiveMonth"
+            }
+          }
+        },
+        "required": [
+          "months"
+        ]
+      },
+      "PreviewTokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "expires_at",
+          "token",
+          "url"
+        ]
+      },
+      "PublicMenu": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicMenuItem"
+            }
+          }
+        },
+        "required": [
+          "items",
+          "key",
+          "locale",
+          "title"
+        ]
+      },
+      "PublicMenuItem": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "target_type": {
+            "$ref": "#/components/schemas/CmsMenuTargetEnum"
+          },
+          "href": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "route": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 100
+          },
+          "route_params": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "new_tab": {
+            "type": "boolean"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicMenuItem"
+            }
+          }
+        },
+        "required": [
+          "children",
+          "href",
+          "label",
+          "new_tab",
+          "route",
+          "route_params",
+          "target_type"
+        ]
+      },
+      "PublicPage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "template": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Block"
+            }
+          },
+          "seo": {
+            "$ref": "#/components/schemas/Seo"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "alternates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Alternate"
+            }
+          },
+          "breadcrumbs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Breadcrumb"
+            }
+          }
+        },
+        "required": [
+          "alternates",
+          "blocks",
+          "breadcrumbs",
+          "id",
+          "locale",
+          "path",
+          "published_at",
+          "seo",
+          "template",
+          "title",
+          "updated_at"
+        ]
+      },
+      "PublicPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "excerpt": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "cover": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagRef"
+            }
+          },
+          "author_id": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "reading_time_minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Block"
+            }
+          },
+          "seo": {
+            "$ref": "#/components/schemas/Seo"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "alternates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Alternate"
+            }
+          }
+        },
+        "required": [
+          "alternates",
+          "author_id",
+          "blocks",
+          "cover",
+          "excerpt",
+          "id",
+          "locale",
+          "path",
+          "published_at",
+          "reading_time_minutes",
+          "seo",
+          "slug",
+          "tags",
+          "title",
+          "updated_at"
+        ]
+      },
+      "PublicPostPage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPostSummary"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "PublicPostSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "excerpt": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "cover": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagRef"
+            }
+          },
+          "author_id": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "reading_time_minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "author_id",
+          "cover",
+          "excerpt",
+          "id",
+          "locale",
+          "path",
+          "published_at",
+          "reading_time_minutes",
+          "slug",
+          "tags",
+          "title"
+        ]
+      },
+      "PublicTag": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "count",
+          "name",
+          "slug"
+        ]
+      },
+      "PublicTagList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicTag"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "RedirectTarget": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "permanent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "permanent",
+          "to"
+        ]
+      },
+      "ResolveResponse": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/CmsResolveKindEnum"
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "page": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicPage"
+              }
+            ],
+            "nullable": true
+          },
+          "post": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PublicPost"
+              }
+            ],
+            "nullable": true
+          },
+          "redirect": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RedirectTarget"
+              }
+            ],
+            "nullable": true
+          }
+        },
+        "required": [
+          "kind",
+          "locale",
+          "page",
+          "post",
+          "redirect"
+        ]
+      },
+      "Revision": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "created_by_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "is_live": {
+            "type": "boolean"
+          },
+          "is_scheduled": {
+            "type": "boolean"
+          },
+          "snapshot": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by_id",
+          "is_live",
+          "is_scheduled",
+          "note",
+          "number",
+          "snapshot"
+        ]
+      },
+      "RevisionPage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Revision"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "Seo": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "canonical_url",
+          "description",
+          "noindex",
+          "og_image",
+          "title"
+        ]
+      },
+      "StaffMenu": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "site": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffMenuItem"
+            }
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "items",
+          "key",
+          "locale",
+          "site",
+          "title",
+          "updated_at"
+        ]
+      },
+      "StaffMenuCreateRequest": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "type": "string",
+            "default": "",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "key": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "default": "",
+            "maxLength": 200
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuItemInput"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "locale"
+        ]
+      },
+      "StaffMenuItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "target_type": {
+            "$ref": "#/components/schemas/CmsMenuTargetEnum"
+          },
+          "page": {
+            "type": "integer",
+            "nullable": true
+          },
+          "post": {
+            "type": "integer",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          },
+          "route": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 100
+          },
+          "route_params": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "new_tab": {
+            "type": "boolean"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffMenuItem"
+            }
+          }
+        },
+        "required": [
+          "children",
+          "id",
+          "label",
+          "new_tab",
+          "page",
+          "post",
+          "route",
+          "route_params",
+          "target_type",
+          "url"
+        ]
+      },
+      "StaffMenuPage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffMenu"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "StaffMenuReplaceRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuItemInput"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "StaffPage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "site": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "translation_group": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Block"
+            }
+          },
+          "seo_title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "seo_description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CmsStatusEnum"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "publish_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "last_published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "archived_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "author_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "updated_by_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "live_revision": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of the live revision."
+          },
+          "scheduled_revision": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of the scheduled revision."
+          },
+          "has_unpublished_changes": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "parent": {
+            "type": "integer",
+            "nullable": true
+          },
+          "template": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "archived_at",
+          "author_id",
+          "blocks",
+          "canonical_url",
+          "created_at",
+          "has_unpublished_changes",
+          "id",
+          "last_published_at",
+          "live_revision",
+          "locale",
+          "noindex",
+          "og_image",
+          "parent",
+          "path",
+          "publish_at",
+          "published_at",
+          "scheduled_revision",
+          "seo_description",
+          "seo_title",
+          "site",
+          "slug",
+          "status",
+          "template",
+          "title",
+          "translation_group",
+          "updated_at",
+          "updated_by_id",
+          "version"
+        ]
+      },
+      "StaffPageCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "maxItems": 1000
+          },
+          "seo_title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "seo_description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          },
+          "site": {
+            "type": "string",
+            "default": "",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "parent": {
+            "type": "integer",
+            "nullable": true
+          },
+          "template": {
+            "type": "string",
+            "default": "default",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "locale",
+          "slug",
+          "title"
+        ]
+      },
+      "StaffPagePage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffPage"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "StaffPost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "site": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "translation_group": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Block"
+            }
+          },
+          "seo_title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "seo_description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/CmsStatusEnum"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "publish_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "last_published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "archived_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "author_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "updated_by_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "live_revision": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of the live revision."
+          },
+          "scheduled_revision": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Number of the scheduled revision."
+          },
+          "has_unpublished_changes": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "excerpt": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "cover": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "reading_time_minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffTagRef"
+            }
+          }
+        },
+        "required": [
+          "archived_at",
+          "author_id",
+          "blocks",
+          "canonical_url",
+          "cover",
+          "created_at",
+          "excerpt",
+          "has_unpublished_changes",
+          "id",
+          "last_published_at",
+          "live_revision",
+          "locale",
+          "noindex",
+          "og_image",
+          "path",
+          "publish_at",
+          "published_at",
+          "reading_time_minutes",
+          "scheduled_revision",
+          "seo_description",
+          "seo_title",
+          "site",
+          "slug",
+          "status",
+          "tags",
+          "title",
+          "translation_group",
+          "updated_at",
+          "updated_by_id",
+          "version"
+        ]
+      },
+      "StaffPostCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "maxItems": 1000
+          },
+          "seo_title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "seo_description": {
+            "type": "string",
+            "maxLength": 320
+          },
+          "canonical_url": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "og_image": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "noindex": {
+            "type": "boolean"
+          },
+          "site": {
+            "type": "string",
+            "default": "",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "excerpt": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "cover": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 50
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "locale",
+          "slug",
+          "title"
+        ]
+      },
+      "StaffPostPage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffPost"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "StaffRedirect": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "site": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "old_path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "new_path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "permanent": {
+            "type": "boolean"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CmsRedirectSourceEnum"
+          },
+          "created_by_id": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by_id",
+          "id",
+          "locale",
+          "new_path",
+          "old_path",
+          "permanent",
+          "site",
+          "source"
+        ]
+      },
+      "StaffRedirectCreateRequest": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "type": "string",
+            "default": "",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "old_path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "new_path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "permanent": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "locale",
+          "new_path",
+          "old_path"
+        ]
+      },
+      "StaffRedirectPage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffRedirect"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "StaffTag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "site": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "locale",
+          "name",
+          "site",
+          "slug"
+        ]
+      },
+      "StaffTagCreateRequest": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "type": "string",
+            "default": "",
+            "maxLength": 64
+          },
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "locale",
+          "name",
+          "slug"
+        ]
+      },
+      "StaffTagPage": {
+        "type": "object",
+        "properties": {
+          "next_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "prev_anchor": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 64
+          },
+          "has_next": {
+            "type": "boolean"
+          },
+          "has_prev": {
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffTag"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "has_next",
+          "has_prev",
+          "items",
+          "next_anchor",
+          "prev_anchor"
+        ]
+      },
+      "StaffTagRef": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "TagRef": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "name",
+          "slug"
+        ]
+      },
+      "TransitionRequest": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "$ref": "#/components/schemas/CmsStatusEnum"
+          },
+          "publish_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Required for 'scheduled'."
+          }
+        },
+        "required": [
+          "to"
+        ]
+      },
+      "VariantRequest": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string",
+            "maxLength": 16
+          },
+          "machine_translate": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "locale"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "JWTCookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "stapel_jwt",
+        "description": "JWT token stored in cookie. Login via /auth/admin/ to get the cookie."
+      }
+    }
+  }
+}

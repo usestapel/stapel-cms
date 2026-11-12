@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.page.unpublished",
+  "description": "A public page was archived and no longer answers at its path. Key = page id.",
+  "type": "object",
+  "properties": {
+    "page_id": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "page_id",
+    "site",
+    "locale",
+    "path"
+  ],
+  "additionalProperties": false
+}

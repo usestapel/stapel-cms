@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.redirect.created",
+  "description": "A redirect old_path -> new_path was written: automatically when a published page or post moved, or by staff. Key = site:locale:old_path.",
+  "type": "object",
+  "properties": {
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "old_path": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "new_path": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "manual"
+      ]
+    }
+  },
+  "required": [
+    "site",
+    "locale",
+    "old_path",
+    "new_path",
+    "source"
+  ],
+  "additionalProperties": false
+}

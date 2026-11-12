@@ -1,0 +1,611 @@
+[
+  {
+    "id": "cms.author",
+    "title": "Write and publish content",
+    "title_key": "flow.cms.author.title",
+    "description": "Staff write a page or post as a draft from typed blocks, preview it by a signed link, publish it now or schedule it, edit it while the published snapshot keeps serving, restore an older revision, and archive it. A moved page leaves a redirect behind.",
+    "description_key": "flow.cms.author.description",
+    "actors": [
+      "Staff editor"
+    ],
+    "steps": [
+      {
+        "kind": "http",
+        "order": 0,
+        "note": "Load the block types the editor offers",
+        "note_key": "flow.cms.author.step.0.note",
+        "ref": "stapel_cms.views.BlockTypesView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/block-types/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 1,
+        "note": "Browse the pages of a site and locale",
+        "note_key": "flow.cms.author.step.1.note",
+        "ref": "stapel_cms.views.StaffPageListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/pages/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 2,
+        "note": "Create a draft page from typed blocks",
+        "note_key": "flow.cms.author.step.2.note",
+        "ref": "stapel_cms.views.StaffPageListView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/pages/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 3,
+        "note": "Open the draft through the signed preview link",
+        "note_key": "flow.cms.author.step.3.note",
+        "ref": "stapel_cms.views.PreviewView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/preview/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 4,
+        "note": "Open a page's working copy",
+        "note_key": "flow.cms.author.step.4.note",
+        "ref": "stapel_cms.views.StaffPageDetailView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 5,
+        "note": "Save edits under the optimistic lock; a moved page leaves a redirect",
+        "note_key": "flow.cms.author.step.5.note",
+        "ref": "stapel_cms.views.StaffPageDetailView.patch",
+        "endpoints": [
+          {
+            "method": "PATCH",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 6,
+        "note": "Delete a page that was never published",
+        "note_key": "flow.cms.author.step.6.note",
+        "ref": "stapel_cms.views.StaffPageDetailView.delete",
+        "endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 7,
+        "note": "Publish now, schedule, cancel the schedule, archive or reopen",
+        "note_key": "flow.cms.author.step.7.note",
+        "ref": "stapel_cms.views.StaffPageTransitionView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/transition/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 8,
+        "note": "Look through the page's revisions",
+        "note_key": "flow.cms.author.step.8.note",
+        "ref": "stapel_cms.views.StaffPageRevisionsView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/revisions/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 9,
+        "note": "Restore an older revision into the working copy",
+        "note_key": "flow.cms.author.step.9.note",
+        "ref": "stapel_cms.views.StaffPageRestoreView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/revisions/<int:number>/restore/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 10,
+        "note": "Mint a signed preview link for the working copy",
+        "note_key": "flow.cms.author.step.10.note",
+        "ref": "stapel_cms.views.StaffPagePreviewTokenView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/preview-token/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 11,
+        "note": "Copy the page into another language, optionally machine-translated",
+        "note_key": "flow.cms.author.step.11.note",
+        "ref": "stapel_cms.views.StaffPageVariantView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/pages/<int:obj_id>/variants/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 12,
+        "note": "Browse the posts of a site and locale",
+        "note_key": "flow.cms.author.step.12.note",
+        "ref": "stapel_cms.views.StaffPostListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/posts/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 13,
+        "note": "Write a draft post",
+        "note_key": "flow.cms.author.step.13.note",
+        "ref": "stapel_cms.views.StaffPostListView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/posts/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 14,
+        "note": "Open a post's working copy",
+        "note_key": "flow.cms.author.step.14.note",
+        "ref": "stapel_cms.views.StaffPostDetailView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 15,
+        "note": "Save a post's edits under the optimistic lock",
+        "note_key": "flow.cms.author.step.15.note",
+        "ref": "stapel_cms.views.StaffPostDetailView.patch",
+        "endpoints": [
+          {
+            "method": "PATCH",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 16,
+        "note": "Delete a post that was never published",
+        "note_key": "flow.cms.author.step.16.note",
+        "ref": "stapel_cms.views.StaffPostDetailView.delete",
+        "endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 17,
+        "note": "Publish, schedule or archive a post",
+        "note_key": "flow.cms.author.step.17.note",
+        "ref": "stapel_cms.views.StaffPostTransitionView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/transition/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 18,
+        "note": "Look through the post's revisions",
+        "note_key": "flow.cms.author.step.18.note",
+        "ref": "stapel_cms.views.StaffPostRevisionsView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/revisions/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 19,
+        "note": "Restore an older revision of the post",
+        "note_key": "flow.cms.author.step.19.note",
+        "ref": "stapel_cms.views.StaffPostRestoreView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/revisions/<int:number>/restore/"
+          }
+        ]
+      },
+      {
+        "kind": "action",
+        "order": 20,
+        "note": "Publication is announced (cache purge, search, sitemap)",
+        "note_key": "flow.cms.author.step.20.note",
+        "ref": "cms.page.published"
+      },
+      {
+        "kind": "action",
+        "order": 21,
+        "note": "Archiving is announced",
+        "note_key": "flow.cms.author.step.21.note",
+        "ref": "cms.page.unpublished"
+      },
+      {
+        "kind": "http",
+        "order": 22,
+        "note": "Mint a signed preview link for a post",
+        "note_key": "flow.cms.author.step.22.note",
+        "ref": "stapel_cms.views.StaffPostPreviewTokenView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/preview-token/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 23,
+        "note": "Copy the post into another language",
+        "note_key": "flow.cms.author.step.23.note",
+        "ref": "stapel_cms.views.StaffPostVariantView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/posts/<int:obj_id>/variants/"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cms.blog",
+    "title": "Read the blog",
+    "title_key": "flow.cms.blog.title",
+    "description": "A visitor pages through the latest posts, filters by tag or month, opens a post, or subscribes to the RSS/Atom feed.",
+    "description_key": "flow.cms.blog.description",
+    "actors": [
+      "Visitor (anonymous)"
+    ],
+    "steps": [
+      {
+        "kind": "http",
+        "order": 1,
+        "note": "Page through the latest posts, optionally by tag or month",
+        "note_key": "flow.cms.blog.step.1.note",
+        "ref": "stapel_cms.views.PublicPostListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/posts/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 2,
+        "note": "Open one post",
+        "note_key": "flow.cms.blog.step.2.note",
+        "ref": "stapel_cms.views.PublicPostDetailView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/posts/<str:slug>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 3,
+        "note": "See which months have posts (the date archive)",
+        "note_key": "flow.cms.blog.step.3.note",
+        "ref": "stapel_cms.views.PostArchiveView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/post-archive/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 4,
+        "note": "See the tags that have published posts",
+        "note_key": "flow.cms.blog.step.4.note",
+        "ref": "stapel_cms.views.PublicTagListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/tags/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 5,
+        "note": "Subscribe to the RSS or Atom feed",
+        "note_key": "flow.cms.blog.step.5.note",
+        "ref": "stapel_cms.views.FeedView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/feed/"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cms.read",
+    "title": "Read the site's pages",
+    "title_key": "flow.cms.read.title",
+    "description": "A visitor opens a URL of the site; the frontend asks cms what lives at that path (a page, a post or a redirect) in the visitor's language, with fallback, and renders its blocks, SEO tags and menus. Reads are cached and answer 304 to a conditional request.",
+    "description_key": "flow.cms.read.description",
+    "actors": [
+      "Visitor (anonymous)"
+    ],
+    "steps": [
+      {
+        "kind": "human",
+        "order": 0,
+        "note": "The visitor opens a page of the site",
+        "note_key": "flow.cms.read.step.0.note",
+        "ref": ""
+      },
+      {
+        "kind": "http",
+        "order": 1,
+        "note": "Ask what lives at the visited path, in the visitor's language",
+        "note_key": "flow.cms.read.step.1.note",
+        "ref": "stapel_cms.views.ResolveView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/resolve/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 2,
+        "note": "Load the header and footer menus",
+        "note_key": "flow.cms.read.step.2.note",
+        "ref": "stapel_cms.views.PublicMenuView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/public/menus/<str:key>/"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cms.site",
+    "title": "Arrange the site",
+    "title_key": "flow.cms.site.title",
+    "description": "Staff edit the header and footer menus, tags and manual redirects.",
+    "description_key": "flow.cms.site.description",
+    "actors": [
+      "Staff editor"
+    ],
+    "steps": [
+      {
+        "kind": "http",
+        "order": 1,
+        "note": "Browse the blog tags",
+        "note_key": "flow.cms.site.step.1.note",
+        "ref": "stapel_cms.views.StaffTagListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/tags/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 2,
+        "note": "Add a tag",
+        "note_key": "flow.cms.site.step.2.note",
+        "ref": "stapel_cms.views.StaffTagListView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/tags/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 3,
+        "note": "Rename a tag",
+        "note_key": "flow.cms.site.step.3.note",
+        "ref": "stapel_cms.views.StaffTagDetailView.patch",
+        "endpoints": [
+          {
+            "method": "PATCH",
+            "path": "/cms/api/v1/staff/tags/<int:tag_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 4,
+        "note": "Remove a tag",
+        "note_key": "flow.cms.site.step.4.note",
+        "ref": "stapel_cms.views.StaffTagDetailView.delete",
+        "endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/cms/api/v1/staff/tags/<int:tag_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 5,
+        "note": "Browse the menus",
+        "note_key": "flow.cms.site.step.5.note",
+        "ref": "stapel_cms.views.StaffMenuListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/menus/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 6,
+        "note": "Create a menu (header, footer)",
+        "note_key": "flow.cms.site.step.6.note",
+        "ref": "stapel_cms.views.StaffMenuListView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/menus/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 7,
+        "note": "Open a menu",
+        "note_key": "flow.cms.site.step.7.note",
+        "ref": "stapel_cms.views.StaffMenuDetailView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/menus/<int:menu_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 8,
+        "note": "Replace the menu's item tree",
+        "note_key": "flow.cms.site.step.8.note",
+        "ref": "stapel_cms.views.StaffMenuDetailView.put",
+        "endpoints": [
+          {
+            "method": "PUT",
+            "path": "/cms/api/v1/staff/menus/<int:menu_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 9,
+        "note": "Delete a menu",
+        "note_key": "flow.cms.site.step.9.note",
+        "ref": "stapel_cms.views.StaffMenuDetailView.delete",
+        "endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/cms/api/v1/staff/menus/<int:menu_id>/"
+          }
+        ]
+      },
+      {
+        "kind": "action",
+        "order": 10,
+        "note": "A menu change is announced",
+        "note_key": "flow.cms.site.step.10.note",
+        "ref": "cms.menu.changed"
+      },
+      {
+        "kind": "http",
+        "order": 11,
+        "note": "Browse redirects, automatic and manual",
+        "note_key": "flow.cms.site.step.11.note",
+        "ref": "stapel_cms.views.StaffRedirectListView.get",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/cms/api/v1/staff/redirects/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 12,
+        "note": "Add a manual redirect",
+        "note_key": "flow.cms.site.step.12.note",
+        "ref": "stapel_cms.views.StaffRedirectListView.post",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/cms/api/v1/staff/redirects/"
+          }
+        ]
+      },
+      {
+        "kind": "http",
+        "order": 13,
+        "note": "Remove a redirect",
+        "note_key": "flow.cms.site.step.13.note",
+        "ref": "stapel_cms.views.StaffRedirectDetailView.delete",
+        "endpoints": [
+          {
+            "method": "DELETE",
+            "path": "/cms/api/v1/staff/redirects/<int:redirect_id>/"
+          }
+        ]
+      }
+    ]
+  }
+]

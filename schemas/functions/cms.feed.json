@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.feed",
+  "description": "The blog feed of a site. Output: {content_type: string, body: string (XML)}.",
+  "type": "object",
+  "properties": {
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 16
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "rss",
+        "atom"
+      ]
+    }
+  },
+  "required": [],
+  "additionalProperties": false
+}

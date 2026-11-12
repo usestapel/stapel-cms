@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.resolve_path",
+  "description": "What lives at a public path of a site, with the locale fallback chain. Output: {found: bool, kind: page|post|redirect|null, id: int|null, locale, title, path} (path is the redirect target for kind=redirect).",
+  "type": "object",
+  "properties": {
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 16
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 500
+    }
+  },
+  "required": [
+    "path"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.menu.changed",
+  "description": "A menu was created, replaced or deleted. Key = menu id.",
+  "type": "object",
+  "properties": {
+    "menu_id": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "key": {
+      "type": "string",
+      "maxLength": 64
+    }
+  },
+  "required": [
+    "menu_id",
+    "site",
+    "locale",
+    "key"
+  ],
+  "additionalProperties": false
+}

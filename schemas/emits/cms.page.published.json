@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cms.page.published",
+  "description": "A page snapshot went live (published now, or a scheduled snapshot reached publish_at). first = the page's first publication. Key = page id. Subscribers: CDN purge, search indexing, sitemap pings.",
+  "type": "object",
+  "properties": {
+    "page_id": {
+      "type": "string"
+    },
+    "site": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "locale": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "translation_group": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "published_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "first": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "page_id",
+    "site",
+    "locale",
+    "path",
+    "revision",
+    "translation_group",
+    "published_at",
+    "first"
+  ],
+  "additionalProperties": false
+}

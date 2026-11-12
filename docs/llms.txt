@@ -1,0 +1,189 @@
+# stapel-cms 0.1.0
+
+Public site content for a Stapel product: pages in a slug tree, a blog (posts, tags, date and tag archives, RSS/Atom), menus (header/footer trees targeting pages, posts, URLs or named frontend routes), SEO fields and a sitemap Function, and redirects written automatically when a published page or post moves. Bodies are typed block lists (rich_text as a ProseMirror/TipTap JSON document, hero, faq, gallery, embed with a host allowlist, a stapel-forms form by id, an opaque listing_rail query) validated by pydantic models from a MERGE registry, so a project adds its own block without forking. Staff write drafts, preview them by a signed link, publish now or on a schedule, keep editing while the published snapshot serves, restore revisions and archive; every publication is a fact. Content is site-scoped through the stapel-core site registry and locale-scoped with a fallback chain; a page can be copied into another locale, optionally through a machine-translation Function. The anonymous read is cached per site and answers conditional requests (ETag, Last-Modified). Not stapel-docs: docs is private workspace documents; cms is what an anonymous visitor reads at a URL of the site.
+
+Contract: axes 2 · surface 10 · extension points 9 · operations 41 · error codes 68 · flows 4.
+Generated from docs/capabilities.json by `stapel-llms-txt` — do not edit; drift-gated by `make contract-check`.
+
+## Configuration axes — what a product switches on
+Settings keys; `default` is what you get by saying nothing. Turning an axis off unmounts the operations it gates.
+- BLOG_ENABLED [bool, default true] — Blog
+  true (default): the site has a blog — posts, tags, monthly and tag archives, an RSS/Atom feed. false: pages, menus and redirects only. Values: true, false.
+  gates 19 operation(s)
+- STAFF_AUTHZ [enum, default "staff"] — Who may edit the site
+  staff (default): every staff account may edit pages, posts and menus. model_perms: a staff account also needs the per-model permission its role grants (the @access mandate), e.g. to let marketing edit posts but not legal pages' menus. Values: staff, model_perms.
+
+## Usage surface — call these before writing your own
+This is the answer to "does Stapel already have something for X?". `instead of` names the outside symbol this one displaces.
+### gate_function
+- validate_blocks — stapel_cms.blocks.validate_blocks
+  Validate a block list ({type, id, data}) and return its normalised JSON; raises BlockError with the error key. The staff API runs every save through it.
+### predicate
+- block_model — stapel_cms.blocks.block_model
+  The pydantic model of one block type; KeyError when it is not registered.
+- block_type_schemas — stapel_cms.blocks.block_type_schemas
+  [{type, schema}] for every registered block type — what GET staff/block-types/ serves to the editor.
+- get_block_types — stapel_cms.blocks.get_block_types
+  The effective block registry (built-ins <- settings <- runtime). Ask it instead of reading the setting.
+- iter_text — stapel_cms.blocks.iter_text
+  Every human-text string inside blocks (headings, labels, text nodes, alt), skipping URLs, media refs and opaque queries: the word count and the translation batch read this.
+- media_refs — stapel_cms.blocks.media_refs
+  Every cdn media reference used inside blocks.
+- word_count — stapel_cms.blocks.word_count
+  Words in the human text of a block list (reading time).
+### factory
+- map_text — stapel_cms.blocks.map_text
+  A copy of blocks with every human-text string replaced by fn(text) — how a machine translation is applied without touching URLs or ids.
+- register_block_type — stapel_cms.blocks.register_block_type
+  Add a project's own block type (a pydantic model) from an AppConfig.ready(), or remove a built-in with None. The settings dict STAPEL_CMS['BLOCK_TYPES'] is the other door; both merge over the built-ins.
+- reset_block_types — stapel_cms.blocks.reset_block_types
+  Drop runtime block registrations, leaving settings untouched — a test lever.
+
+## Extension points — what a product replaces, fork-free
+- BLOCK_TYPES [merge_registry]
+  Block types a page or post body may contain: {'<type>': 'dotted.path.PydanticModel' | None} merged over the built-ins (rich_text, hero, faq, gallery, embed, form, listing_rail); None removes a built-in. A project's own block is a pydantic model (stapel_cms.blocks.BlockData, extra='forbid'); its JSON schema reaches the staff editor through GET staff/block-types/.
+- EMBED_HOSTS [setting]
+  Hosts an embed block may point at (exact host, https only). Replace the list to allow another provider.
+- MACHINE_TRANSLATE [strategy]
+  Name of a comm Function {texts, source, target} -> {texts} used when staff copy a page into another locale with machine_translate. Empty = off; unreachable or malformed answers are a 503, never an untranslated copy.
+- MEDIA_REFS_FUNCTION [strategy]
+  comm Function that tracks which media content uses (default cdn.refs_sync); empty disables. Best-effort after commit.
+- STAPEL_CMS_PUBLIC_PRESENTER / STAPEL_CMS_STAFF_PRESENTER [presenter]
+  Swap keys (STAPEL_SWAP) for the public and staff presenters, so a host changes what the API shows without forking a view.
+- cms.page.published [comm_event]
+  A page snapshot went live (now or at its scheduled time): site, locale, path, revision, translation group. CDN purge, search indexing and sitemap pings subscribe.
+- cms.post.published [comm_event]
+  A blog post went live: path, tags, the staff author id.
+- cms.redirect.created [comm_event]
+  A published page or post moved (or staff added a redirect): old_path -> new_path.
+- cms.sitemap_entries [comm_function]
+  Published, indexable pages and posts of a site with hreflang alternates, keyset-paged: what a sitemap aggregator asks.
+
+## Fits with — fleet dependencies
+- stapel-cdn (optional) — media references are cdn refs (<type>/<id>); cdn.refs_sync keeps pictures used by content from being swept as unclaimed
+- stapel-core (required) — comm bus (cms.* facts, sitemap/resolve/feed Functions, user.merged consumer), site registry, AnchorPagination, GDPR owner protocol, @access, AppSettings
+- stapel-forms (optional) — the form block embeds a stapel-forms form by its public_id
+- stapel-translate (optional) — a content translation Function behind MACHINE_TRANSLATE copies a page into another locale machine-translated (upstream ask T1)
+
+## HTTP operations (41) — call by operationId, never by a typed path
+Paths are relative to `/cms/api/v1/`.
+### CMS public
+- GET /public/feed/ — cms_public_feed
+- GET /public/menus/{key}/ — cms_public_menus_retrieve
+- GET /public/post-archive/ — cms_public_post_archive
+- GET /public/posts/ — cms_public_posts_list
+- GET /public/posts/{slug}/ — cms_public_posts_retrieve
+- GET /public/preview/ — cms_public_preview
+- GET /public/resolve/ — cms_public_resolve
+- GET /public/tags/ — cms_public_tags_list
+### CMS staff
+- GET /staff/block-types/ — cms_staff_block_types
+- POST /staff/menus/ — cms_staff_menus_create
+- DELETE /staff/menus/{menu_id}/ — cms_staff_menus_destroy
+- GET /staff/menus/ — cms_staff_menus_list
+- PUT /staff/menus/{menu_id}/ — cms_staff_menus_replace
+- GET /staff/menus/{menu_id}/ — cms_staff_menus_retrieve
+- POST /staff/pages/ — cms_staff_pages_create
+- DELETE /staff/pages/{obj_id}/ — cms_staff_pages_destroy
+- GET /staff/pages/ — cms_staff_pages_list
+- POST /staff/pages/{obj_id}/preview-token/ — cms_staff_pages_preview_token
+- GET /staff/pages/{obj_id}/ — cms_staff_pages_retrieve
+- GET /staff/pages/{obj_id}/revisions/ — cms_staff_pages_revisions_list
+- POST /staff/pages/{obj_id}/revisions/{number}/restore/ — cms_staff_pages_revisions_restore
+- POST /staff/pages/{obj_id}/transition/ — cms_staff_pages_transition
+- PATCH /staff/pages/{obj_id}/ — cms_staff_pages_update
+- POST /staff/pages/{obj_id}/variants/ — cms_staff_pages_variant_create
+- POST /staff/posts/ — cms_staff_posts_create
+- DELETE /staff/posts/{obj_id}/ — cms_staff_posts_destroy
+- GET /staff/posts/ — cms_staff_posts_list
+- POST /staff/posts/{obj_id}/preview-token/ — cms_staff_posts_preview_token
+- GET /staff/posts/{obj_id}/ — cms_staff_posts_retrieve
+- GET /staff/posts/{obj_id}/revisions/ — cms_staff_posts_revisions_list
+- POST /staff/posts/{obj_id}/revisions/{number}/restore/ — cms_staff_posts_revisions_restore
+- POST /staff/posts/{obj_id}/transition/ — cms_staff_posts_transition
+- PATCH /staff/posts/{obj_id}/ — cms_staff_posts_update
+- POST /staff/posts/{obj_id}/variants/ — cms_staff_posts_variant_create
+- POST /staff/redirects/ — cms_staff_redirects_create
+- DELETE /staff/redirects/{redirect_id}/ — cms_staff_redirects_destroy
+- GET /staff/redirects/ — cms_staff_redirects_list
+- POST /staff/tags/ — cms_staff_tags_create
+- DELETE /staff/tags/{tag_id}/ — cms_staff_tags_destroy
+- GET /staff/tags/ — cms_staff_tags_list
+- PATCH /staff/tags/{tag_id}/ — cms_staff_tags_update
+
+## Error codes (68) — the StapelError envelope
+Render `t(code, params)`; branch UX on the remediation. Localized text lives in docs/errors.<lang>.md, not here.
+- error.400.bad_request [400] fix_input
+- error.400.captcha_invalid [400] retry
+- error.400.captcha_required [400] retry
+- error.400.cms_block_type_unknown [400] fix_input {type}
+- error.400.cms_blocks_invalid [400] fix_input {detail}
+- error.400.cms_blocks_too_large [400] fix_input {max_blocks,max_bytes}
+- error.400.cms_locale_unknown [400] fix_input
+- error.400.cms_menu_invalid [400] fix_input {detail}
+- error.400.cms_object_expected [400] fix_input
+- error.400.cms_parent_invalid [400] fix_input
+- error.400.cms_path_reserved [400] fix_input
+- error.400.cms_publish_at_invalid [400] fix_input
+- error.400.cms_redirect_invalid [400] fix_input
+- error.400.cms_site_unknown [400] fix_input
+- error.400.cms_slug_invalid [400] fix_input
+- error.400.cms_tag_unknown [400] fix_input
+- error.400.cms_template_unknown [400] fix_input
+- error.400.cms_tree_too_deep [400] fix_input {max_depth}
+- error.400.cms_url_unsafe [400] fix_input
+- error.400.expected_list [400] fix_input
+- error.400.field.blank [400] fix_input {field}
+- error.400.field.does_not_exist [400] fix_input {field}
+- error.400.field.invalid [400] fix_input {field}
+- error.400.field.invalid_choice [400] fix_input {field}
+- error.400.field.max_length [400] fix_input {field,max_length}
+- error.400.field.max_value [400] fix_input {field,max_value}
+- error.400.field.min_length [400] fix_input {field,min_length}
+- error.400.field.min_value [400] fix_input {field,min_value}
+- error.400.field.null [400] fix_input {field}
+- error.400.field.required [400] fix_input {field}
+- error.400.field.unique [400] fix_input {field}
+- error.400.invalid_ad_id [400] fix_input
+- error.400.validation_error [400] fix_input
+- error.400.verification_failed [400] verify
+- error.400.verification_invalid_factor [400] verify
+- error.401.unauthorized [401] reauthenticate
+- error.402.payment_required [402] retry
+- error.403.forbidden [403] retry
+- error.403.network_blocked [403] contact_support
+- error.403.verification_enrollment_required [403] verify
+- error.403.verification_required [403] verify
+- error.404.ad_not_found [404] retry
+- error.404.cms_not_found [404] retry
+- error.404.cms_preview_invalid [404] fix_input
+- error.404.cms_revision_not_found [404] retry
+- error.404.not_found [404] retry
+- error.404.verification_challenge_not_found [404] verify
+- error.405.method_not_allowed [405] retry
+- error.406.not_acceptable [406] retry
+- error.408.request_timeout [408] retry
+- error.409.cms_delete_published [409] fix_input
+- error.409.cms_path_taken [409] fix_input
+- error.409.cms_slug_taken [409] fix_input
+- error.409.cms_transition_invalid [409] fix_input {from,to}
+- error.409.cms_variant_exists [409] fix_input
+- error.409.cms_version_conflict [409] retry {current}
+- error.409.conflict [409] fix_input
+- error.410.gone [410] retry
+- error.413.payload_too_large [413] retry
+- error.415.unsupported_media_type [415] retry
+- error.422.unprocessable_entity [422] wait_and_retry
+- error.423.locked [423] wait_and_retry
+- error.423.verification_locked [423] wait_and_retry
+- error.429.rate_limit [429] wait_and_retry {retry_after_minutes}
+- error.429.too_many_requests [429] wait_and_retry
+- error.500.internal [500] contact_support
+- error.503.cms_translation_unavailable [503] wait_and_retry
+- error.503.mandate_unavailable [503] retry
+
+## Documented flows (4) — full steps in docs/flows.json
+- cms.author — Write and publish content
+- cms.blog — Read the blog
+- cms.read — Read the site's pages
+- cms.site — Arrange the site

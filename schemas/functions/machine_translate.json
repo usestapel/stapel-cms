@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "machine_translate",
+  "description": "The contract of the Function named by STAPEL_CMS['MACHINE_TRANSLATE'] (not provided by cms; upstream ask T1 to stapel-translate). Input: a batch of plain texts and the source/target locales. Output ($defs.result): {texts: [string]} of the same length and order. Any other answer is refused (cms answers 503, never an untranslated copy).",
+  "type": "object",
+  "properties": {
+    "texts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 20000
+      },
+      "minItems": 1,
+      "maxItems": 2000
+    },
+    "source": {
+      "type": "string",
+      "maxLength": 16
+    },
+    "target": {
+      "type": "string",
+      "maxLength": 16
+    }
+  },
+  "required": [
+    "texts",
+    "source",
+    "target"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "result": {
+      "type": "object",
+      "properties": {
+        "texts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "texts"
+      ]
+    }
+  }
+}
