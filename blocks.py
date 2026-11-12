@@ -18,22 +18,28 @@ from __future__ import annotations
 import json
 import re
 import threading
+from functools import lru_cache
 from typing import Literal, Optional
 
 from django.utils.module_loading import import_string
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
-from .richtext import RichDoc
+from .richtext import RICHTEXT_KEY, RichDoc, map_doc_text
 from .safety import embed_host_allowed, is_media_ref, is_safe_url
 
 BLOCK_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 BLOCK_TYPE_RE = re.compile(r"^[a-z][a-z0-9_]{0,47}$")
 
-#: String keys whose values are human text (translated, counted for reading
-#: time). Everything else (urls, media refs, ids, opaque queries) is left alone.
-TEXT_KEYS = frozenset({"text", "heading", "subheading", "label", "question", "title", "caption", "alt"})
-#: Subtrees no walker enters.
+#: Subtrees the media walker never enters.
 OPAQUE_KEYS = frozenset({"query"})
+
+#: JSON-schema marker of a block string field that is human text: machine
+#: translation and reading time walk it; everything else (urls, media refs,
+#: ids, enums, opaque queries) is left alone. Declare it with
+#: ``Field(json_schema_extra=TRANSLATABLE)``; the editor sees it in
+#: ``GET staff/block-types/``.
+TRANSLATABLE_KEY = "x-cms-translatable"
+TRANSLATABLE = {TRANSLATABLE_KEY: True}
 
 
 class BlockData(BaseModel):
@@ -53,7 +59,7 @@ class RichTextBlock(BlockData):
 
 
 class CallToAction(BlockData):
-    label: str = Field(min_length=1, max_length=80)
+    label: str = Field(min_length=1, max_length=80, json_schema_extra=TRANSLATABLE)
     href: str = Field(max_length=2000)
 
     @field_validator("href")
@@ -65,8 +71,8 @@ class CallToAction(BlockData):
 
 
 class HeroBlock(BlockData):
-    heading: str = Field(min_length=1, max_length=200)
-    subheading: Optional[str] = Field(default=None, max_length=500)
+    heading: str = Field(min_length=1, max_length=200, json_schema_extra=TRANSLATABLE)
+    subheading: Optional[str] = Field(default=None, max_length=500, json_schema_extra=TRANSLATABLE)
     media: Optional[str] = Field(default=None, max_length=200)
     cta: Optional[CallToAction] = None
     align: Literal["start", "center"] = "start"
@@ -78,19 +84,19 @@ class HeroBlock(BlockData):
 
 
 class FaqItem(BlockData):
-    question: str = Field(min_length=1, max_length=300)
+    question: str = Field(min_length=1, max_length=300, json_schema_extra=TRANSLATABLE)
     answer: RichDoc
 
 
 class FaqBlock(BlockData):
-    title: Optional[str] = Field(default=None, max_length=200)
+    title: Optional[str] = Field(default=None, max_length=200, json_schema_extra=TRANSLATABLE)
     items: list[FaqItem] = Field(min_length=1, max_length=100)
 
 
 class GalleryItem(BlockData):
     media: str = Field(max_length=200)
-    alt: str = Field(default="", max_length=300)
-    caption: Optional[str] = Field(default=None, max_length=300)
+    alt: str = Field(default="", max_length=300, json_schema_extra=TRANSLATABLE)
+    caption: Optional[str] = Field(default=None, max_length=300, json_schema_extra=TRANSLATABLE)
 
     @field_validator("media")
     @classmethod
@@ -105,7 +111,7 @@ class GalleryBlock(BlockData):
 
 class EmbedBlock(BlockData):
     url: str = Field(max_length=2000)
-    title: str = Field(min_length=1, max_length=200)
+    title: str = Field(min_length=1, max_length=200, json_schema_extra=TRANSLATABLE)
     aspect_ratio: Literal["16:9", "4:3", "1:1", "9:16"] = "16:9"
 
     @field_validator("url")
@@ -120,11 +126,11 @@ class EmbedBlock(BlockData):
 
 class FormBlock(BlockData):
     form_id: str = Field(min_length=1, max_length=32, pattern=r"^[A-Za-z0-9_-]+$")
-    title: Optional[str] = Field(default=None, max_length=200)
+    title: Optional[str] = Field(default=None, max_length=200, json_schema_extra=TRANSLATABLE)
 
 
 class ListingRailBlock(BlockData):
-    title: Optional[str] = Field(default=None, max_length=200)
+    title: Optional[str] = Field(default=None, max_length=200, json_schema_extra=TRANSLATABLE)
     source: str = Field(min_length=1, max_length=32, pattern=r"^[a-z][a-z0-9_.-]*$")
     query: dict = Field(default_factory=dict)
     limit: int = Field(default=8, ge=1, le=24)
@@ -242,32 +248,79 @@ def block_type_schemas() -> list[dict]:
     return [{"type": name, "schema": block_model(name).model_json_schema()} for name in sorted(get_block_types())]
 
 
-def iter_text(node):
-    """Every human-text string under ``node`` (see TEXT_KEYS / OPAQUE_KEYS)."""
-    if isinstance(node, dict):
-        for key, value in node.items():
-            if key in OPAQUE_KEYS:
-                continue
-            if key in TEXT_KEYS and isinstance(value, str):
-                yield value
-            else:
-                yield from iter_text(value)
-    elif isinstance(node, list):
-        for item in node:
-            yield from iter_text(item)
+@lru_cache(maxsize=256)
+def _schema_of(model: type[BaseModel]) -> dict:
+    return model.model_json_schema()
 
 
-def map_text(node, fn):
-    """A copy of ``node`` with every human-text string replaced by ``fn(text)``."""
-    if isinstance(node, dict):
-        return {
-            key: (fn(value) if key in TEXT_KEYS and isinstance(value, str)
-                  else value if key in OPAQUE_KEYS else map_text(value, fn))
-            for key, value in node.items()
-        }
-    if isinstance(node, list):
-        return [map_text(item, fn) for item in node]
-    return node
+def _deref(schema: dict, defs: dict) -> dict:
+    while isinstance(schema, dict) and "$ref" in schema:
+        schema = defs.get(schema["$ref"].rsplit("/", 1)[-1], {})
+    return schema if isinstance(schema, dict) else {}
+
+
+def _fits(value, schema: dict) -> bool:
+    kind = schema.get("type")
+    if isinstance(value, str):
+        return kind == "string"
+    if isinstance(value, list):
+        return kind == "array"
+    if isinstance(value, dict):
+        return kind == "object" or "properties" in schema or RICHTEXT_KEY in schema
+    return False
+
+
+def _walk(value, schema: dict, defs: dict, fn):
+    schema = _deref(schema, defs)
+    if isinstance(value, str) and schema.get(TRANSLATABLE_KEY):
+        return fn(value) if value.strip() else value
+    if isinstance(value, dict) and schema.get(RICHTEXT_KEY):
+        return map_doc_text(value, fn)
+    for branch in schema.get("anyOf") or schema.get("oneOf") or ():
+        branch = _deref(branch, defs)
+        if _fits(value, branch):
+            if schema.get(TRANSLATABLE_KEY):
+                branch = {**branch, TRANSLATABLE_KEY: True}
+            return _walk(value, branch, defs, fn)
+    if isinstance(value, dict) and isinstance(schema.get("properties"), dict):
+        props = schema["properties"]
+        return {key: _walk(item, props.get(key, {}), defs, fn) for key, item in value.items()}
+    if isinstance(value, list) and isinstance(schema.get("items"), dict):
+        return [_walk(item, schema["items"], defs, fn) for item in value]
+    return value
+
+
+def map_text(blocks, fn):
+    """A copy of a block list with every human-text string replaced by ``fn(text)``.
+
+    Human text is a string field whose block schema carries
+    :data:`TRANSLATABLE_KEY`, and every text node of a rich document
+    (:func:`stapel_cms.richtext.map_doc_text`). A block whose type is no
+    longer registered is copied unchanged.
+    """
+    out = []
+    for block in blocks or []:
+        try:
+            model = block_model(str(block.get("type")))
+        except (KeyError, ImportError, TypeError):
+            out.append(block)
+            continue
+        schema = _schema_of(model)
+        data = _walk(block.get("data") or {}, schema, schema.get("$defs", {}), fn)
+        out.append({**block, "data": data})
+    return out
+
+
+def iter_text(blocks) -> list[str]:
+    """Every human-text string of a block list, in document order."""
+    found: list[str] = []
+
+    def collect(text):
+        found.append(text)
+        return text
+
+    map_text(blocks, collect)
+    return found
 
 
 def media_refs(node) -> set[str]:
@@ -295,6 +348,8 @@ __all__ = [
     "BUILTIN_BLOCK_TYPES",
     "BlockData",
     "BlockError",
+    "TRANSLATABLE",
+    "TRANSLATABLE_KEY",
     "block_model",
     "block_type_schemas",
     "get_block_types",

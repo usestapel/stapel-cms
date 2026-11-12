@@ -47,7 +47,8 @@ CELERY_BEAT_SCHEDULE = {**get_cms_beat_schedule()} # stapel_cms.beat; or `manage
 | `STAFF_AUTHZ` | `"staff"` | axis; `"model_perms"` adds the `@access` mandate per model |
 | `LOCALES` / `DEFAULT_LOCALE` / `LOCALE_FALLBACKS` | `["en"]` / `"en"` / `{}` | replace |
 | `EMBED_HOSTS`, `PAGE_TEMPLATES`, `BLOG_PATH_PREFIX` | see CONFIG.MD | replace |
-| `MACHINE_TRANSLATE` | `""` | comm Function name (contract `schemas/functions/machine_translate.json`) |
+| `MACHINE_TRANSLATE` | `""` | comm Function name, e.g. `"translate.text"` (contract `schemas/functions/machine_translate.json`) |
+| `MACHINE_TRANSLATE_TIMEOUT_SECONDS`, `MACHINE_TRANSLATE_MAX_TEXT_CHARS` / `_MAX_ITEMS` / `_MAX_CHARS` | `300`, `5000` / `2000` / `200000` | per-call timeout; the Function's bounds cms chunks to |
 | `MEDIA_REFS_FUNCTION` | `"cdn.refs_sync"` | comm Function name; empty disables |
 | limits, cache, preview | see CONFIG.MD | replace |
 
@@ -55,9 +56,12 @@ CELERY_BEAT_SCHEDULE = {**get_cms_beat_schedule()} # stapel_cms.beat; or `manage
 
 A block is a pydantic model subclassing `stapel_cms.blocks.BlockData`
 (`extra="forbid"`). Register it in settings (`BLOCK_TYPES`) or at runtime
-(`register_block_type(name, Model)` from `AppConfig.ready()`). Text the
-walkers treat as human text (translation, reading time) lives under the keys
-in `blocks.TEXT_KEYS`; a key named `query` is opaque. `GET
+(`register_block_type(name, Model)` from `AppConfig.ready()`). Human text
+(machine translation, reading time) is declared in the model: a string field
+with `Field(json_schema_extra=blocks.TRANSLATABLE)` (`"x-cms-translatable":
+true` in its schema), and any `RichDoc` field (`"x-cms-richtext": true`, text
+nodes walked one by one, code left alone). Undeclared strings are never
+translated; a key named `query` is opaque to the media walker. `GET
 staff/block-types/` publishes every model's JSON schema to the editor.
 
 ### Presenters (`STAPEL_SWAP`)

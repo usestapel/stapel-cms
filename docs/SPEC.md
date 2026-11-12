@@ -38,11 +38,23 @@ file for the semantics; the gates in §12 enforce it (`tests/`).
 - **Machine translation is optional**: `POST staff/pages/{id}/variants/`
   copies a page into another locale as a draft; with
   `machine_translate: true` and `MACHINE_TRANSLATE` naming a reachable comm
-  Function, every text leaf of the title, SEO fields and blocks is sent in one
-  batch (`schemas/functions/machine_translate.json`). Unset or unreachable →
-  `error.503.cms_translation_unavailable`, never a silent untranslated copy.
-  stapel-translate resolves UI keys only (`translate.resolve`); a content
-  Function is upstream ask **T1**.
+  Function (stapel-translate's `translate.text`), the human text is sent:
+  title, excerpt, SEO title/description, every block string field whose
+  schema carries `x-cms-translatable`, and every text node of a rich
+  document one by one (marks and structure untouched; code marks, code
+  blocks, urls, media refs, ids and opaque queries never leave). A text
+  longer than `MACHINE_TRANSLATE_MAX_TEXT_CHARS` (5000, the provider's
+  per-text bound) is split at sentence boundaries and rejoined with its own
+  separators; each node keeps its edge whitespace; the batch becomes
+  sequential calls of at most `MACHINE_TRANSLATE_MAX_ITEMS` (2000) texts and
+  `MACHINE_TRANSLATE_MAX_CHARS` (200 000) chars, each with
+  `MACHINE_TRANSLATE_TIMEOUT_SECONDS` (300). Everything is translated before
+  the variant is written (one transaction): unset, unreachable,
+  `error.503.translate.unavailable`, a refusal or a malformed answer →
+  `error.503.cms_translation_unavailable` with `params.reason`
+  (`not_configured` | `unreachable` | `provider_failed` | `refused` |
+  `malformed` | `failed`) and `params.upstream_error` (the neighbour's key,
+  when it named one) — never a half-translated or untranslated copy.
 
 ## 3. Models
 
@@ -122,7 +134,9 @@ refused outright, then the value must start with `https://`, `http://`,
 `java\tscript:`, `data:`, `vbscript:`, `&#106;avascript:` and
 protocol-relative `//evil.example` all fail. Embed URLs are `https` only and
 the host must be in `EMBED_HOSTS` (exact host, case-folded, no userinfo, no
-port). Depth ≤ 12, nodes per document ≤ 5000, text leaf ≤ 20 000 chars.
+port). Depth ≤ 12, nodes per document ≤ 5000, text leaf ≤ 20 000 chars (kept above
+the translation provider's 5000 per text: machine translation splits a long
+leaf at sentence boundaries).
 `tests/test_safety.py` holds the payload table.
 
 ## 6. Publish workflow
@@ -289,7 +303,7 @@ block registry merge/remove, architecture grep (no `stapel_*` sibling import).
 
 | Id | Repo | Ask |
 |---|---|---|
-| T1 | stapel-translate | a content Function (`translate.text {texts, source, target}` → `{texts}`) behind `MACHINE_TRANSLATE` |
+| T1 | stapel-translate | a content Function (`translate.text {texts, source, target}` → `{texts}`) behind `MACHINE_TRANSLATE` — built; cms chunks to its bounds |
 | F1 | stapel-forms | a public `forms.form.exists {public_id}` Function so the `form` block can be validated at save time (today: shape only) |
 | X1 | stapel-tools | `STAPEL_LIBS["cms"]` (url_prefix `cms/api/`, beat `stapel_cms.beat.get_cms_beat_schedule`), `_gdpr_owners.py` += `cms: ["account"]` |
 | S1 | stapel-core | a site-scoped sitemap aggregator that asks `<module>.sitemap_entries` Functions — built (`stapel_core.django.sitemap`); cms registers with it and invalidates it |

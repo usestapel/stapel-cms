@@ -4,7 +4,7 @@ def pytest_configure(config):
     if not settings.configured:
         from stapel_cms._codegen_settings import settings_kwargs
 
-        settings.configure(**settings_kwargs())
+        settings.configure(**settings_kwargs(neighbours=True))
         import django
 
         django.setup()

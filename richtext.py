@@ -17,7 +17,11 @@ from .safety import is_media_ref, is_safe_url
 
 MAX_DEPTH = 12
 MAX_NODES = 5000
+#: A text leaf may be longer than a translation provider accepts per text;
+#: machine translation splits it at sentence boundaries and rejoins it.
 TEXT_MAX = 20_000
+#: JSON-schema marker of a rich document (block walkers translate its text nodes).
+RICHTEXT_KEY = "x-cms-richtext"
 
 
 class _Strict(BaseModel):
@@ -170,6 +174,8 @@ Block = Annotated[
 class RichDoc(_Strict):
     """The root node. ``content`` is the document's block list."""
 
+    model_config = ConfigDict(extra="forbid", json_schema_extra={RICHTEXT_KEY: True})
+
     type: Literal["doc"]
     content: list[Block] = Field(default_factory=list, max_length=2000)
 
@@ -207,6 +213,36 @@ def _measure(node: Any, depth: int = 1) -> tuple[int, int]:
     return deepest, count
 
 
+def map_doc_text(node, fn):
+    """A copy of a raw document with each human text replaced by ``fn(text)``.
+
+    Text nodes are mapped one by one, so marks and structure stay as they
+    are; image ``alt``/``title`` are text too. Code (a ``codeBlock``, a text
+    node with a ``code`` mark) is left untranslated.
+    """
+    if isinstance(node, list):
+        return [map_doc_text(child, fn) for child in node]
+    if not isinstance(node, dict):
+        return node
+    kind = node.get("type")
+    if kind == "codeBlock":
+        return node
+    out = dict(node)
+    if kind == "text" and isinstance(node.get("text"), str):
+        is_code = any(isinstance(m, dict) and m.get("type") == "code" for m in node.get("marks") or [])
+        if not is_code and node["text"].strip():
+            out["text"] = fn(node["text"])
+    elif kind == "image" and isinstance(node.get("attrs"), dict):
+        attrs = dict(node["attrs"])
+        for key in ("alt", "title"):
+            if isinstance(attrs.get(key), str) and attrs[key].strip():
+                attrs[key] = fn(attrs[key])
+        out["attrs"] = attrs
+    if isinstance(node.get("content"), list):
+        out["content"] = map_doc_text(node["content"], fn)
+    return out
+
+
 def empty_doc() -> dict:
     return {"type": "doc", "content": []}
 
@@ -221,4 +257,4 @@ def paragraph_doc(*paragraphs: str) -> dict:
     }
 
 
-__all__ = ["MAX_DEPTH", "MAX_NODES", "RichDoc", "empty_doc", "paragraph_doc"]
+__all__ = ["MAX_DEPTH", "MAX_NODES", "RICHTEXT_KEY", "TEXT_MAX", "RichDoc", "empty_doc", "map_doc_text", "paragraph_doc"]

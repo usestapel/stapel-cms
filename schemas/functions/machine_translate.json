@@ -1,17 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "machine_translate",
-  "description": "The contract of the Function named by STAPEL_CMS['MACHINE_TRANSLATE'] (not provided by cms; upstream ask T1 to stapel-translate). Input: a batch of plain texts and the source/target locales. Output ($defs.result): {texts: [string]} of the same length and order. Any other answer is refused (cms answers 503, never an untranslated copy).",
+  "description": "The contract of the Function named by STAPEL_CMS['MACHINE_TRANSLATE'] (not provided by cms; stapel-translate's translate.text answers it). Input: a batch of plain texts (human text only: rich-text nodes one by one, never JSON) and the source/target locales. cms stays within MACHINE_TRANSLATE_MAX_TEXT_CHARS per text (longer texts are split at sentence boundaries), MACHINE_TRANSLATE_MAX_ITEMS texts and MACHINE_TRANSLATE_MAX_CHARS chars per call (defaults 5000 / 2000 / 200000 shown here), making several sequential calls with MACHINE_TRANSLATE_TIMEOUT_SECONDS each. Output ($defs.result): {texts: [string]} of the same length and order. Any failure or other answer is refused: cms answers 503 with params.reason and creates nothing.",
   "type": "object",
   "properties": {
     "texts": {
       "type": "array",
       "items": {
         "type": "string",
-        "maxLength": 20000
+        "maxLength": 5000
       },
       "minItems": 1,
-      "maxItems": 2000
+      "maxItems": 2000,
+      "description": "At most 200000 chars in total per call (MACHINE_TRANSLATE_MAX_CHARS)."
     },
     "source": {
       "type": "string",

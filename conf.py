@@ -65,6 +65,15 @@ DEFAULTS = {
     # comm Function translating text batches ({texts, source, target} ->
     # {texts}); empty = machine translation is off.
     "MACHINE_TRANSLATE": "",
+    # Seconds one MACHINE_TRANSLATE call may take; a big page is several
+    # sequential calls, each translated by an LLM in provider batches.
+    "MACHINE_TRANSLATE_TIMEOUT_SECONDS": 300,
+    # The translation Function's bounds (stapel-translate's defaults): chars
+    # per text (longer rich-text leaves are split at sentence boundaries),
+    # texts per call and chars per call (a page becomes several calls).
+    "MACHINE_TRANSLATE_MAX_TEXT_CHARS": 5000,
+    "MACHINE_TRANSLATE_MAX_ITEMS": 2000,
+    "MACHINE_TRANSLATE_MAX_CHARS": 200000,
 }
 
 #: The values STAFF_AUTHZ accepts (system check E002 refuses anything else).

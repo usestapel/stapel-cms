@@ -39,3 +39,7 @@ MERGES over the built-in block types; every other key replaces its default.
 | HTTP_MAX_AGE | env | `Cache-Control: public, max-age` of public reads. | no | 60 |
 | MEDIA_REFS_FUNCTION | env | comm Function told which cdn refs content uses (`cdn.refs_sync` contract); empty disables. | no | cdn.refs_sync |
 | MACHINE_TRANSLATE | env | comm Function `{texts, source, target}` → `{texts}` for machine-translated locale variants; empty = off; unreachable is W001. | no | "" |
+| MACHINE_TRANSLATE_TIMEOUT_SECONDS | env | seconds one MACHINE_TRANSLATE call may take (a page is several sequential calls). | no | 300 |
+| MACHINE_TRANSLATE_MAX_TEXT_CHARS | env | chars per text the translation Function accepts; longer rich-text leaves are split at sentence boundaries and rejoined. | no | 5000 |
+| MACHINE_TRANSLATE_MAX_ITEMS | env | texts per translation call. | no | 2000 |
+| MACHINE_TRANSLATE_MAX_CHARS | env | chars per translation call. | no | 200000 |

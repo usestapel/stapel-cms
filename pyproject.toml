@@ -52,6 +52,9 @@ test = [
     "stapel-tools>=0.79.1,<1",
     # the wire gate validates bodies; core's VALIDATE_SCHEMAS needs it too
     "jsonschema>=4",
+    # The machine-translation seam is proved against the real provider:
+    # `translate.text` first ships after 0.8.5.
+    "stapel-translate>0.8.5,<1",
 ]
 
 [tool.setuptools]

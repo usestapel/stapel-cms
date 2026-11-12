@@ -12,7 +12,12 @@ def settings_kwargs(
     *,
     root_urlconf: str = "stapel_cms.tests.urls",
     contract: bool = False,
+    neighbours: bool = False,
 ) -> dict:
+    """``neighbours=True`` (the test suite) also installs whichever neighbour
+    modules cms reaches by Function name are importable (stapel-forms,
+    stapel-translate), so the seams are proved against the real providers.
+    Contract emission never installs them: the contract is cms's alone."""
     rest_framework = {
         "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
         "DEFAULT_SCHEMA_CLASS": "stapel_core.django.openapi.schemas.PermissionAwareAutoSchema",
@@ -46,6 +51,7 @@ def settings_kwargs(
             "rest_framework",
             "drf_spectacular",
             "stapel_cms",
+            *(_neighbour_apps() if neighbours and not contract else []),
         ],
         AUTH_USER_MODEL="users.User",
         DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}},
@@ -78,6 +84,17 @@ def settings_kwargs(
         MIGRATION_MODULES={"users": None},
         REST_FRAMEWORK=rest_framework,
     )
+
+
+def _neighbour_apps() -> list[str]:
+    from importlib.util import find_spec
+
+    apps = []
+    if find_spec("stapel_translate") is not None:
+        apps += ["stapel_core.django.taskstore", "stapel_translate"]
+    if find_spec("stapel_forms") is not None:
+        apps.append("stapel_forms")
+    return apps
 
 
 #: Forced on drf-spectacular's singleton so a single-module instance derives

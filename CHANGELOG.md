@@ -23,7 +23,10 @@ Pre-1.0 semver: **minor = breaking**, patch = compatible.
   collapse, a page beats a redirect).
 - Site scoping through the stapel-core site registry, locale variants with a
   fallback chain and hreflang alternates, optional machine translation via a
-  comm Function.
+  comm Function (stapel-translate's `translate.text`): human text only —
+  block fields declared `x-cms-translatable`, rich-text nodes one by one —
+  long texts split at sentences, batches chunked to the provider's bounds,
+  all-or-nothing with a 503 `reason`.
 - Cached public read API (per-site generation token, ETag / Last-Modified,
   304) and staff API (`STAFF_AUTHZ` = `staff` | `model_perms`).
 - Facts `cms.page.published`, `cms.page.unpublished`, `cms.post.published`,
