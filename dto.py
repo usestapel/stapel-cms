@@ -60,6 +60,7 @@ class PublicPostDTO:
     seo: dict
     updated_at: Optional[datetime.datetime]
     alternates: list
+    media: list = field(default_factory=list)
 
 
 @dataclass

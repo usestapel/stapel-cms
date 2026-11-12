@@ -196,7 +196,7 @@
     {
       "module": "stapel-cdn",
       "optional": true,
-      "reason": "media references are cdn refs (<type>/<id>); cdn.refs_sync keeps pictures used by content from being swept as unclaimed"
+      "reason": "media references are cdn refs (<type>/<id>); cdn.refs_sync keeps pictures used by content from being swept as unclaimed; cdn.describe_many describes them in public answers (media, seo.og_image_url)"
     },
     {
       "module": "stapel-forms",

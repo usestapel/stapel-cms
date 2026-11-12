@@ -2171,6 +2171,64 @@
         "type": "string",
         "description": "* `form_unpublished` - form_unpublished\n* `form_unverified` - form_unverified"
       },
+      "CmsImage": {
+        "type": "object",
+        "description": "A described media ref: stapel-core's ``StapelImage`` shape plus the ``ref`` it describes.",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "mime": {
+            "type": "string",
+            "nullable": true
+          },
+          "width": {
+            "type": "integer",
+            "nullable": true
+          },
+          "height": {
+            "type": "integer",
+            "nullable": true
+          },
+          "aspect": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "square": {
+            "type": "boolean"
+          },
+          "preview_b64": {
+            "type": "string",
+            "nullable": true
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VariantMeta"
+            }
+          },
+          "ref": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "aspect",
+          "height",
+          "mime",
+          "preview_b64",
+          "ref",
+          "source",
+          "square",
+          "url",
+          "variants",
+          "width"
+        ]
+      },
       "CmsMenuTargetEnum": {
         "enum": [
           "page",
@@ -2577,6 +2635,13 @@
             "items": {
               "$ref": "#/components/schemas/Breadcrumb"
             }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CmsImage"
+            },
+            "description": "Described images of the media refs above (og_image, blocks), when the media service answered; a ref missing here renders from the ref alone."
           }
         },
         "required": [
@@ -2585,6 +2650,7 @@
           "breadcrumbs",
           "id",
           "locale",
+          "media",
           "path",
           "published_at",
           "seo",
@@ -2663,6 +2729,13 @@
             "items": {
               "$ref": "#/components/schemas/Alternate"
             }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CmsImage"
+            },
+            "description": "Described images of the media refs above (cover, og_image, blocks), when the media service answered; a ref missing here renders from the ref alone."
           }
         },
         "required": [
@@ -2673,6 +2746,7 @@
           "excerpt",
           "id",
           "locale",
+          "media",
           "path",
           "published_at",
           "reading_time_minutes",
@@ -3004,6 +3078,12 @@
             "nullable": true,
             "maxLength": 200
           },
+          "og_image_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "Absolute URL of og_image's default rendition when the media service described it; null otherwise (render from the ref).",
+            "maxLength": 2048
+          },
           "noindex": {
             "type": "boolean"
           }
@@ -3013,6 +3093,7 @@
           "description",
           "noindex",
           "og_image",
+          "og_image_url",
           "title"
         ]
       },
@@ -4026,6 +4107,37 @@
         },
         "required": [
           "to"
+        ]
+      },
+      "VariantMeta": {
+        "type": "object",
+        "description": "One generated variant file (or the original) — mirrors ``VariantMeta``.",
+        "properties": {
+          "tier": {
+            "type": "string"
+          },
+          "branch": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer",
+            "nullable": true
+          },
+          "height": {
+            "type": "integer",
+            "nullable": true
+          }
+        },
+        "required": [
+          "branch",
+          "height",
+          "tier",
+          "url",
+          "width"
         ]
       },
       "VariantRequest": {

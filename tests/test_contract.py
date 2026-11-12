@@ -28,14 +28,14 @@ LLMS_TXT_BUDGET = "6000"
 #: The codegen contract the react pair generates from (docs/SPEC.md §8).
 STABLE_COMPONENTS = {
     "Alternate", "ArchiveMonth", "Block", "BlockType", "BlockTypeList", "Breadcrumb", "CmsMenuTargetEnum",
-    "CmsRedirectSourceEnum", "CmsResolveKindEnum", "CmsStatusEnum", "CmsContentWarningCodeEnum", "ContentWarning", "MenuItemInput",
+    "CmsRedirectSourceEnum", "CmsImage", "CmsResolveKindEnum", "CmsStatusEnum", "CmsContentWarningCodeEnum", "ContentWarning", "MenuItemInput",
     "PatchedStaffPageUpdateRequest", "PatchedStaffPostUpdateRequest", "PatchedStaffTagUpdateRequest",
     "PostArchiveResponse", "PreviewTokenResponse", "PublicMenu", "PublicMenuItem", "PublicPage", "PublicPost",
     "PublicPostPage", "PublicPostSummary", "PublicTag", "PublicTagList", "RedirectTarget", "ResolveMeta", "ResolveResponse",
     "Revision", "RevisionPage", "Seo", "StaffMenu", "StaffMenuCreateRequest", "StaffMenuItem", "StaffMenuPage",
     "StaffMenuReplaceRequest", "StaffPage", "StaffPageCreateRequest", "StaffPagePage", "StaffPost",
     "StaffPostCreateRequest", "StaffPostPage", "StaffRedirect", "StaffRedirectCreateRequest", "StaffRedirectPage",
-    "StaffTag", "StaffTagCreateRequest", "StaffTagPage", "StaffTagRef", "TagRef", "TransitionRequest",
+    "StaffTag", "StaffTagCreateRequest", "StaffTagPage", "StaffTagRef", "TagRef", "TransitionRequest", "VariantMeta",
     "VariantRequest",
 }
 

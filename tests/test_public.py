@@ -28,7 +28,7 @@ def test_resolve_a_page_with_seo_breadcrumbs_and_blocks(staff_client, api_client
     assert body["kind"] == "page" and body["locale"] == "en"
     assert page["breadcrumbs"] == [{"title": "About", "path": "/about"}]
     assert page["seo"] == {"title": "Team", "description": "The people", "canonical_url": None,
-                           "og_image": "page/team1", "noindex": False}
+                           "og_image": "page/team1", "og_image_url": None, "noindex": False}
     assert page["blocks"][0]["type"] == "rich_text"
 
 

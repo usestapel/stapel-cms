@@ -32,7 +32,9 @@ Pre-1.0 semver: **minor = breaking**, patch = compatible.
   long texts split at sentences, batches chunked to the provider's bounds,
   all-or-nothing with a 503 `reason`.
 - Cached public read API (per-site generation token, ETag / Last-Modified,
-  304) and staff API (`STAFF_AUTHZ` = `staff` | `model_perms`).
+  304); public page and post answers carry `media` (images described by
+  `cdn.describe_many` in core's `StapelImage` shape, bare refs kept) and
+  `seo.og_image_url`, refs only when the cdn is unreachable and staff API (`STAFF_AUTHZ` = `staff` | `model_perms`).
 - Facts `cms.page.published`, `cms.page.unpublished`, `cms.post.published`,
   `cms.post.unpublished`, `cms.menu.changed`, `cms.redirect.created`;
   Functions `cms.sitemap_entries`, `cms.resolve_path`, `cms.feed`;

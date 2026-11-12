@@ -62,7 +62,7 @@ This is the answer to "does Stapel already have something for X?". `instead of` 
   Published, indexable pages and posts of a site with hreflang alternates, keyset-paged: what a sitemap aggregator asks.
 
 ## Fits with — fleet dependencies
-- stapel-cdn (optional) — media references are cdn refs (<type>/<id>); cdn.refs_sync keeps pictures used by content from being swept as unclaimed
+- stapel-cdn (optional) — media references are cdn refs (<type>/<id>); cdn.refs_sync keeps pictures used by content from being swept as unclaimed; cdn.describe_many describes them in public answers (media, seo.og_image_url)
 - stapel-core (required) — comm bus (cms.* facts, sitemap/resolve/feed Functions, user.merged consumer), sitemap aggregator (cms registers as a provider when core ships it), site registry, AnchorPagination, GDPR owner protocol, @access, AppSettings
 - stapel-forms (optional) — the form block embeds a stapel-forms form by its public_id
 - stapel-translate (optional) — a content translation Function behind MACHINE_TRANSLATE copies a page into another locale machine-translated (upstream ask T1)

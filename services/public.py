@@ -57,8 +57,22 @@ def _breadcrumbs(page: Page) -> list[dict]:
     return list(reversed(crumbs))
 
 
+def _enriched(view: dict, site: str, snap: dict, extra_refs=()) -> dict:
+    """Add ``media`` (described images) and ``seo.og_image_url`` to a public view."""
+    from ..blocks import media_refs
+    from .enrich import absolute, describe
+
+    og = snap.get("og_image") or ""
+    refs = [og, *extra_refs, *sorted(media_refs(snap.get("blocks") or []))]
+    media = describe(refs)
+    by_ref = {item["ref"]: item for item in media}
+    view["media"] = media
+    view["seo"]["og_image_url"] = absolute(by_ref[og]["url"], site) if og in by_ref else None
+    return view
+
+
 def page_view(page: Page, snap: dict, *, preview: bool = False) -> dict:
-    return {
+    return _enriched({
         "id": page.pk,
         "locale": page.locale,
         "path": page.path,
@@ -70,7 +84,7 @@ def page_view(page: Page, snap: dict, *, preview: bool = False) -> dict:
         "updated_at": page.last_published_at or page.publish_at or page.updated_at,
         "alternates": [] if preview else _alternates(Page, page),
         "breadcrumbs": _breadcrumbs(page),
-    }
+    }, page.site, snap)
 
 
 def _tags(post: Post) -> list[dict]:
@@ -94,13 +108,13 @@ def post_summary(post: Post, snap: dict) -> dict:
 
 
 def post_view(post: Post, snap: dict, *, preview: bool = False) -> dict:
-    return {
+    return _enriched({
         **post_summary(post, snap),
         "blocks": snap.get("blocks") or [],
         "seo": {**_seo(snap), "noindex": True} if preview else _seo(snap),
         "updated_at": post.last_published_at or post.publish_at or post.updated_at,
         "alternates": [] if preview else _alternates(Post, post),
-    }
+    }, post.site, snap, [snap.get("cover") or ""])
 
 
 def _live(model, now=None):

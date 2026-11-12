@@ -44,3 +44,5 @@ MERGES over the built-in block types; every other key replaces its default.
 | MACHINE_TRANSLATE_MAX_ITEMS | env | texts per translation call. | no | 2000 |
 | MACHINE_TRANSLATE_MAX_CHARS | env | chars per translation call. | no | 200000 |
 | FORM_EXISTS_FUNCTION | env | comm Function `{public_id}` → `{exists, published}` checking a form block on save (unknown refused) and publish (unpublished refused); unreachable = shape check plus a warning; empty disables. | no | forms.form.exists |
+| MEDIA_DESCRIBE_FUNCTION | env | comm Function `{refs}` → `{items, missing}` (`cdn.describe_many`) describing the images of a public page or post answer (`media`, `seo.og_image_url`); unreachable = bare refs only; empty disables. | no | cdn.describe_many |
+| MEDIA_DESCRIBE_MAX_REFS | env | refs described per public answer (one call); the rest stay bare refs. | no | 50 |

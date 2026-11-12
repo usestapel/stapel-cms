@@ -102,6 +102,11 @@ img_refs = {r: Image.objects.get(file_hash=r.split('/')[1]).refs for r in refs}
 record("media refs sync (cdn.refs_sync)", f"Page.media_refs={row.media_refs}; cdn Image.refs={img_refs}",
        sorted(row.media_refs) == sorted(refs) and all(v == [f"cms/page/{page['id']}"] for v in img_refs.values()))
 
+public = Client().get(f"{V1}/public/resolve/", {"path": f"/{slug}", "locale": "en"}).json()["page"]
+described = {m["ref"]: (m["url"], [v["tier"] for v in m["variants"]]) for m in public["media"]}
+record("public media enrichment (cdn.describe_many)", f"media={described}",
+       sorted(described) == sorted(refs) and all(url for url, _ in described.values()))
+
 before = len(mockllm.CALLS)
 var = c.post(f"{V1}/staff/pages/{page['id']}/variants/", {"locale": "de", "machine_translate": True},
              content_type="application/json")

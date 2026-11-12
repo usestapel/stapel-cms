@@ -11,6 +11,7 @@ import datetime
 
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+from stapel_core.media.drf import StapelImageSerializer
 from stapel_core.django.api.errors import StapelValidationError
 
 from . import models as m
@@ -57,6 +58,10 @@ class SeoSerializer(serializers.Serializer):
     description = serializers.CharField(max_length=m.SEO_DESCRIPTION_MAX_LENGTH, allow_blank=True)
     canonical_url = serializers.CharField(max_length=m.URL_MAX_LENGTH, allow_null=True)
     og_image = serializers.CharField(max_length=m.MEDIA_REF_MAX_LENGTH, allow_null=True)
+    og_image_url = serializers.CharField(
+        max_length=2048, allow_null=True,
+        help_text="Absolute URL of og_image's default rendition when the media service described it; "
+                  "null otherwise (render from the ref).")
     noindex = serializers.BooleanField()
 
 
@@ -75,6 +80,12 @@ class TagRefSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=m.TAG_NAME_MAX_LENGTH)
 
 
+class CmsImageSerializer(StapelImageSerializer):
+    """A described media ref: stapel-core's ``StapelImage`` shape plus the ``ref`` it describes."""
+
+    ref = serializers.CharField(max_length=m.MEDIA_REF_MAX_LENGTH)
+
+
 # ── Public ─────────────────────────────────────────────────────────────────
 
 
@@ -90,6 +101,9 @@ class PublicPageSerializer(serializers.Serializer):
     updated_at = _dt(allow_null=True)
     alternates = AlternateSerializer(many=True)
     breadcrumbs = BreadcrumbSerializer(many=True)
+    media = CmsImageSerializer(
+        many=True, help_text="Described images of the media refs above (og_image, blocks), when the media "
+                             "service answered; a ref missing here renders from the ref alone.")
 
 
 class PublicPostSummarySerializer(serializers.Serializer):
@@ -111,6 +125,9 @@ class PublicPostSerializer(PublicPostSummarySerializer):
     seo = SeoSerializer()
     updated_at = _dt(allow_null=True)
     alternates = AlternateSerializer(many=True)
+    media = CmsImageSerializer(
+        many=True, help_text="Described images of the media refs above (cover, og_image, blocks), when the "
+                             "media service answered; a ref missing here renders from the ref alone.")
 
 
 class RedirectTargetSerializer(serializers.Serializer):

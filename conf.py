@@ -62,6 +62,11 @@ DEFAULTS = {
     "HTTP_MAX_AGE": 60,
     # comm Function keeping cdn's media references; empty disables.
     "MEDIA_REFS_FUNCTION": "cdn.refs_sync",
+    # comm Function describing media refs for public answers ({refs} ->
+    # {items, missing}); empty = public answers carry bare refs only.
+    "MEDIA_DESCRIBE_FUNCTION": "cdn.describe_many",
+    # Refs described per public answer (stapel-cdn's batch ceiling).
+    "MEDIA_DESCRIBE_MAX_REFS": 50,
     # comm Function checking a form block's reference ({public_id} ->
     # {exists, published}); empty = shape check only.
     "FORM_EXISTS_FUNCTION": "forms.form.exists",
