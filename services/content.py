@@ -34,7 +34,7 @@ from ..errors import (
 )
 from ..models import Kind, Page, Post, Revision, Status, Tag
 from ..safety import is_media_ref, is_safe_url
-from . import CmsError, cache, events, media, paths
+from . import CmsError, cache, events, media, paths, sitemaps
 
 SEO_FIELDS = ("seo_title", "seo_description", "canonical_url", "og_image", "noindex")
 
@@ -170,6 +170,12 @@ def _parent(obj, parent_id):
     return parent
 
 
+def _public_changed(site: str) -> None:
+    """What the public sees on ``site`` changed: drop its read cache and sitemaps."""
+    cache.bump_after_commit(site)
+    sitemaps.invalidate_after_commit(site)
+
+
 def get(kind: str, obj_id) -> object:
     obj = SPECS[kind].model.objects.select_related("live_revision", "scheduled_revision").filter(pk=obj_id).first()
     if obj is None:
@@ -256,7 +262,7 @@ def update(kind: str, obj_id, user, data: dict):
         obj.save()
         _append_revision(obj, kind, user, "saved")
         if new_path != old_path and serving_revision(obj) is not None:
-            cache.bump_after_commit(obj.site)
+            _public_changed(obj.site)
     media.sync_after_commit(obj, kind)
     return get(kind, obj.pk)
 
@@ -298,7 +304,7 @@ def transition(kind: str, obj_id, user, to: str, publish_at=None):
             if isinstance(obj, Post) and obj.published_at is None:
                 obj.published_at = publish_at
             obj.save()
-            cache.bump_after_commit(obj.site)
+            _public_changed(obj.site)
         elif to == fsm.DRAFT:
             if from_status == fsm.SCHEDULED:
                 obj.scheduled_revision, obj.publish_at = None, None
@@ -310,7 +316,7 @@ def transition(kind: str, obj_id, user, to: str, publish_at=None):
             else:
                 obj.status, obj.archived_at = Status.DRAFT, None
             obj.save()
-            cache.bump_after_commit(obj.site)
+            _public_changed(obj.site)
         elif to == fsm.ARCHIVED:
             was_public = serving_revision(obj, now) is not None
             obj.live_revision = obj.scheduled_revision = None
@@ -319,7 +325,7 @@ def transition(kind: str, obj_id, user, to: str, publish_at=None):
             obj.save()
             if was_public:
                 events.emit_unpublished(emit, obj, kind, public_path(obj))
-                cache.bump_after_commit(obj.site)
+                _public_changed(obj.site)
     media.sync_after_commit(obj, kind)
     return get(kind, obj.pk)
 
@@ -337,7 +343,7 @@ def _publish(obj, kind, user, emit, now, *, note: str, revision=None) -> None:
     path = public_path(obj)
     paths.drop_redirect_at(obj.site, obj.locale, path)
     events.emit_published(emit, obj, kind, path, revision, first)  # emit-check: ok — emit is the caller's mutate_and_emit() emitter
-    cache.bump_after_commit(obj.site)
+    _public_changed(obj.site)
 
 
 def promote_due(now=None) -> int:

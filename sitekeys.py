@@ -1,7 +1,8 @@
 """Which site a row or a request belongs to — the stapel-core site registry.
 
-A site key is the registry entry's brand key, else its host; ``""`` is the
-only key of a single-host deployment (empty registry). The public read takes
+A site key is the registry entry's brand key, else its host — exactly
+stapel-core's ``Site.key``, which the sitemap aggregator sends to providers;
+``""`` is the only key of a single-host deployment (empty registry). The public read takes
 the key from the request (``site_for_request``: an unmatched host falls back
 to the primary site, as the registry defines); the staff API names it.
 """
@@ -17,6 +18,9 @@ def _registry():
 def key_of(site) -> str:
     if site is None:
         return ""
+    key = getattr(site, "key", None)
+    if isinstance(key, str):
+        return key
     return site.brand.key if site.brand else site.host
 
 

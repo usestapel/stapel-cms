@@ -21,3 +21,7 @@ class CmsConfig(AppConfig):
         if not any(p.section == OWNER for p in gdpr_registry.providers):
             gdpr_registry.register(CmsGDPRProvider())
         register_gdpr_owner(OWNER, SUBJECT_TYPES, erase_subject)
+
+        from .services.sitemaps import register_provider
+
+        register_provider()

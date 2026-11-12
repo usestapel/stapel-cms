@@ -236,7 +236,14 @@ beyond the staff `author_id`):
 
 **Functions**: `cms.sitemap_entries {site?, locale?, cursor?, limit?}` →
 `{entries: [{path, locale, kind, lastmod, alternates}], cursor}` (published,
-not `noindex`); `cms.resolve_path {site, locale, path}` →
+not `noindex`; `alternates` lists the indexable live variants of a
+translation group of two or more, else `[]`; `limit` clamped to 1..5000).
+It answers stapel-core's sitemap provider contract and is registered with
+core's aggregator (`register_sitemap_provider`) from `AppConfig.ready()` when
+core has it; publish, unpublish and a move of public content drop the site's
+cached sitemap set (`invalidate_sitemaps(site)`). Variant paths carry no
+locale: a frontend that prefixes locales sets `STAPEL_SITEMAP["URL_TEMPLATE"]
+= "{origin}/{locale}{path}"` (check W003 otherwise). `cms.resolve_path {site, locale, path}` →
 `{found, kind, id, locale, title, path}`; `cms.feed {site, locale, type}` →
 `{content_type, body}`.
 
@@ -285,4 +292,4 @@ block registry merge/remove, architecture grep (no `stapel_*` sibling import).
 | T1 | stapel-translate | a content Function (`translate.text {texts, source, target}` → `{texts}`) behind `MACHINE_TRANSLATE` |
 | F1 | stapel-forms | a public `forms.form.exists {public_id}` Function so the `form` block can be validated at save time (today: shape only) |
 | X1 | stapel-tools | `STAPEL_LIBS["cms"]` (url_prefix `cms/api/`, beat `stapel_cms.beat.get_cms_beat_schedule`), `_gdpr_owners.py` += `cms: ["account"]` |
-| S1 | stapel-core | a site-scoped sitemap aggregator that asks `<module>.sitemap_entries` Functions (cms ships the Function; core has no aggregator yet) |
+| S1 | stapel-core | a site-scoped sitemap aggregator that asks `<module>.sitemap_entries` Functions — built (`stapel_core.django.sitemap`); cms registers with it and invalidates it |

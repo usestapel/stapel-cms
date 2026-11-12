@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "cms.sitemap_entries",
-  "description": "Published, indexable (not noindex) pages then posts of one site, keyset-paged. Output: {entries: [{path, locale, kind: page|post, lastmod (ISO 8601), alternates: [{locale, path}]}], cursor: string|null}. Pass cursor back for the next batch.",
+  "description": "A provider of stapel-core's sitemap aggregator (stapel_core.django.sitemap; registered from AppConfig.ready()). Published, indexable (not noindex) pages then posts (posts only with BLOG_ENABLED) of one site, keyset-paged. Output: {entries: [{path (site-relative, no locale prefix), locale, kind: page|post, lastmod (ISO 8601), alternates: [{locale, path}] (indexable live variants of the translation group, itself included, when there are two or more; else [])}], cursor: string|null}. Pass cursor back for the next batch; null means done. limit defaults to 500.",
   "type": "object",
   "properties": {
     "site": {

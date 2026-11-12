@@ -29,7 +29,10 @@ Pre-1.0 semver: **minor = breaking**, patch = compatible.
 - Facts `cms.page.published`, `cms.page.unpublished`, `cms.post.published`,
   `cms.post.unpublished`, `cms.menu.changed`, `cms.redirect.created`;
   Functions `cms.sitemap_entries`, `cms.resolve_path`, `cms.feed`;
+  `cms.sitemap_entries` is a provider of stapel-core's sitemap aggregator
+  (registered when core has it; publish / unpublish / move drop the site's
+  cached sitemaps; hreflang alternates for variant groups);
   `user.merged` consumer; GDPR owner (staff ids pseudonymized, content kept).
 - `cms_seed` (about, contacts, terms, privacy, FAQ as drafts),
   `cms_publish_due` and the beat entry, admin, system checks E001–E005,
-  W001–W002.
+  W001–W003.

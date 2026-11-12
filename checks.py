@@ -9,6 +9,9 @@
 - W001  ``MACHINE_TRANSLATE`` names a Function not reachable here.
 - W002  the cache is per-process (locmem): a publish invalidates only the
         process that served it until ``CACHE_TTL_SECONDS`` passes.
+- W003  more than one locale and cms feeds stapel-core's sitemap, but
+        ``STAPEL_SITEMAP["URL_TEMPLATE"]`` has no ``{locale}``: variant paths
+        carry no locale, so every variant of a page maps to one URL.
 """
 import re
 
@@ -92,4 +95,26 @@ def check_integrations(app_configs, **kwargs):
             f"process that handled it; others serve the old body for up to CACHE_TTL_SECONDS.",
             hint="Point STAPEL_CMS['CACHE_ALIAS'] at a shared cache (redis) in production.",
             id="stapel_cms.W002"))
+    findings += _sitemap_findings(cms_settings)
     return findings
+
+
+def _sitemap_findings(cms_settings) -> list:
+    from .services.sitemaps import PROVIDER, aggregator
+
+    locales = list(cms_settings.LOCALES or [])
+    module = aggregator()
+    if len(locales) < 2 or module is None or PROVIDER not in module.sitemap_providers().values():
+        return []
+    from stapel_core.django.sitemap.conf import sitemap_settings
+
+    template = str(sitemap_settings.URL_TEMPLATE or "")
+    if "{locale}" in template:
+        return []
+    return [checks.Warning(
+        f"STAPEL_CMS['LOCALES'] has {len(locales)} locales but STAPEL_SITEMAP['URL_TEMPLATE'] is {template!r}: "
+        "cms variant paths carry no locale, so every language version of a page becomes the same sitemap URL "
+        "(duplicates are dropped, hreflang alternates point at one address).",
+        hint="If the frontend prefixes locales, set STAPEL_SITEMAP['URL_TEMPLATE'] = '{origin}/{locale}{path}'; "
+             "if each locale lives on its own site, silence stapel_cms.W003.",
+        id="stapel_cms.W003")]

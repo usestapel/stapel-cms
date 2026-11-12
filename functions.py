@@ -1,6 +1,8 @@
 """comm Functions provided by stapel-cms (schemas in ``schemas/functions/``).
 
-- ``cms.sitemap_entries`` — published, indexable pages and posts of a site.
+- ``cms.sitemap_entries`` — published, indexable pages and posts of a site:
+  a provider of stapel-core's sitemap aggregator (registered from
+  ``AppConfig.ready()``; contract in ``stapel_core.django.sitemap.build``).
 - ``cms.resolve_path`` — what lives at a public path (for search, links).
 - ``cms.feed`` — the RSS/Atom feed body of a site's blog.
 
@@ -18,7 +20,8 @@ def sitemap_entries(payload):
     from .services.public import sitemap_entries as entries
 
     limit = max(1, min(int(payload.get("limit") or SITEMAP_DEFAULT_LIMIT), SITEMAP_MAX_LIMIT))
-    return entries(str(payload.get("site") or ""), payload.get("locale") or None, payload.get("cursor"), limit)
+    locale = str(payload.get("locale") or "").strip().lower() or None
+    return entries(str(payload.get("site") or ""), locale, payload.get("cursor"), limit)
 
 
 @function("cms.resolve_path")

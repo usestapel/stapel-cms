@@ -217,31 +217,65 @@ def menu(site: str, locale: str | None, key: str) -> dict:
     raise CmsError(404, ERR_404_NOT_FOUND)
 
 
+def _sitemap_alternates(model, site: str, objs: list, now) -> dict:
+    """``{translation_group: [{locale, path}]}`` of indexable live variants, for groups of two or more."""
+    groups = {obj.translation_group for obj in objs}
+    if not groups:
+        return {}
+    by_group: dict = {}
+    for row in _live(model, now).filter(site=site, translation_group__in=groups).order_by("locale"):
+        if (serving_revision(row, now).snapshot or {}).get("noindex"):
+            continue
+        by_group.setdefault(row.translation_group, []).append({"locale": row.locale, "path": public_path(row)})
+    return {group: alts for group, alts in by_group.items() if len(alts) > 1}
+
+
 def sitemap_entries(site: str, locale: str | None, cursor: str | None, limit: int) -> dict:
-    """Published, indexable pages then posts, keyset-paged by ``"<kind>:<id>"``."""
+    """One batch of stapel-core's sitemap provider contract for ``site``.
+
+    Published, indexable pages then posts (posts only with the blog on),
+    keyset-paged by the cursor ``"<kind>:<last id>"``; ``cursor: None`` in the
+    answer means done. Each entry is ``{path, locale, lastmod, kind}`` plus
+    ``alternates``: every indexable live variant of its translation group,
+    itself included, when the group has two or more; else ``[]``.
+    """
+    from ..conf import cms_settings
+
+    kinds = [(Kind.PAGE, Page)] + ([(Kind.POST, Post)] if cms_settings.BLOG_ENABLED else [])
     kind, _, last = str(cursor or "").partition(":")
     last_id = int(last) if last.isdigit() else 0
+    if kind not in {name for name, _ in kinds}:
+        kind, last_id = Kind.PAGE, 0
     out: list[dict] = []
     now = timezone.now()
-    for current, model in ((Kind.PAGE, Page), (Kind.POST, Post)):
-        if kind == Kind.POST and current == Kind.PAGE:
+    started = False
+    for current, model in kinds:
+        started = started or current == kind
+        if not started:
             continue
         qs = _live(model, now).filter(site=site).order_by("id")
         if locale:
             qs = qs.filter(locale=locale)
-        if kind == current:
+        if current == kind:
             qs = qs.filter(id__gt=last_id)
+        picked, full = [], False
         for obj in qs.iterator(chunk_size=200):
-            snap = serving_revision(obj, now).snapshot or {}
-            if snap.get("noindex"):
+            if (serving_revision(obj, now).snapshot or {}).get("noindex"):
                 continue
-            out.append({
+            picked.append(obj)
+            if len(out) + len(picked) >= limit:
+                full = True
+                break
+        alternates = _sitemap_alternates(model, site, picked, now)
+        for obj in picked:
+            entry = {
                 "path": public_path(obj), "locale": obj.locale, "kind": current,
                 "lastmod": (obj.last_published_at or obj.publish_at or obj.updated_at).isoformat(),
-                "alternates": _alternates(model, obj),
-            })
-            if len(out) >= limit:
-                return {"entries": out, "cursor": f"{current}:{obj.pk}"}
+                "alternates": alternates.get(obj.translation_group, []),
+            }
+            out.append(entry)
+        if full:
+            return {"entries": out, "cursor": f"{current}:{picked[-1].pk}"}
     return {"entries": out, "cursor": None}
 
 

@@ -16,7 +16,7 @@ def test_sitemap_entries_pages_then_posts_without_noindex(staff_client):
     publish(staff_client, "post", make_post(staff_client, "hello")["id"])
     out = call("cms.sitemap_entries", {"site": ""})
     assert [(e["kind"], e["path"]) for e in out["entries"]] == [("page", "/about"), ("post", "/blog/hello")]
-    assert out["cursor"] is None and out["entries"][0]["alternates"] == [{"locale": "en", "path": "/about"}]
+    assert out["cursor"] is None and out["entries"][0]["alternates"] == []
 
 
 def test_sitemap_entries_page_by_cursor(staff_client):

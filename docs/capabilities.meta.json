@@ -6,7 +6,7 @@
     {
       "module": "stapel-core",
       "optional": false,
-      "reason": "comm bus (cms.* facts, sitemap/resolve/feed Functions, user.merged consumer), site registry, AnchorPagination, GDPR owner protocol, @access, AppSettings"
+      "reason": "comm bus (cms.* facts, sitemap/resolve/feed Functions, user.merged consumer), sitemap aggregator (cms registers as a provider when core ships it), site registry, AnchorPagination, GDPR owner protocol, @access, AppSettings"
     },
     {
       "module": "stapel-cdn",

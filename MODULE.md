@@ -76,12 +76,27 @@ Every view inherits `StapelAPIView`; subclass it, set
 
 | Kind | Name | Schema |
 |---|---|---|
-| Function (provides) | `cms.sitemap_entries {site?, locale?, cursor?, limit?}` → `{entries, cursor}` | `schemas/functions/cms.sitemap_entries.json` |
+| Function (provides) | `cms.sitemap_entries {site?, locale?, cursor?, limit?}` → `{entries, cursor}` — a stapel-core sitemap provider | `schemas/functions/cms.sitemap_entries.json` |
 | Function (provides) | `cms.resolve_path {site, locale, path}` → `{found, kind, id, locale, title, path}` | `schemas/functions/cms.resolve_path.json` |
 | Function (provides) | `cms.feed {site, locale, type}` → `{content_type, body}` | `schemas/functions/cms.feed.json` |
 | Function (calls, optional) | `MACHINE_TRANSLATE`, `MEDIA_REFS_FUNCTION` | `schemas/functions/machine_translate.json`; cdn's own |
 | Action (emits) | `cms.page.published`, `cms.page.unpublished`, `cms.post.published`, `cms.post.unpublished`, `cms.menu.changed`, `cms.redirect.created` | `schemas/emits/` |
 | Action (consumes) | `user.merged` (authorship ids follow the survivor) | `schemas/consumes/user.merged.json` |
+
+### Sitemap (stapel-core's aggregator)
+
+With a core that ships `stapel_core.django.sitemap`, `AppConfig.ready()`
+registers `cms.sitemap_entries` as provider `"cms"` (remove it with
+`STAPEL_SITEMAP = {"PROVIDERS": {"cms": None}}`), and every publish,
+unpublish or move of public content drops the site's cached set
+(`invalidate_sitemaps(site)`, now and after commit). The host mounts
+`get_sitemap_urls()`. Site keys are core's `Site.key`.
+
+**Locales.** Variant paths carry no locale (`/about` in `en` and in `de`).
+If the frontend prefixes locales, set
+`STAPEL_SITEMAP["URL_TEMPLATE"] = "{origin}/{locale}{path}"`; with more than
+one locale and no `{locale}` in the template, check `W003` warns (every
+variant would become one URL). One site per locale: silence `W003`.
 
 GDPR: `register_gdpr_owner("cms", ["account"], erase_subject)` — erasure
 pseudonymizes staff ids, content stays.
@@ -90,7 +105,8 @@ pseudonymizes staff ids, content stays.
 
 `E001` block registry, `E002` STAFF_AUTHZ, `E003` locales, `E004` templates,
 `E005` embed hosts, `W001` translation Function unreachable, `W002`
-per-process cache.
+per-process cache, `W003` several locales but the sitemap URL template has no
+`{locale}`.
 
 ## Contract emission — the `info.version` convention
 
