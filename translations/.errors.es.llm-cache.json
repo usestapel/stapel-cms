@@ -1,0 +1,114 @@
+{
+  "error.400.cms_block_type_unknown": {
+    "hash": "4ed0ded9dbd4b4f2",
+    "text": "Tipo de bloque desconocido: {type}"
+  },
+  "error.400.cms_blocks_invalid": {
+    "hash": "64419184731dbbd4",
+    "text": "Un bloque de contenido no es válido: {detail}"
+  },
+  "error.400.cms_blocks_too_large": {
+    "hash": "ec60930bd19189f2",
+    "text": "La página tiene demasiado contenido (como máximo {max_blocks} bloques y {max_bytes} bytes)"
+  },
+  "error.400.cms_form_unknown": {
+    "hash": "e5f4fd7fa5d7629b",
+    "text": "No existe el formulario {form_id}"
+  },
+  "error.400.cms_locale_unknown": {
+    "hash": "cd733d611c3eb18f",
+    "text": "Este idioma no está habilitado"
+  },
+  "error.400.cms_menu_invalid": {
+    "hash": "064b3d3da0693d34",
+    "text": "El menú no es válido: {detail}"
+  },
+  "error.400.cms_object_expected": {
+    "hash": "b402bebc32eb27f3",
+    "text": "Este campo debe ser un objeto"
+  },
+  "error.400.cms_parent_invalid": {
+    "hash": "baac4df05f4e3934",
+    "text": "Esta página no se puede colocar ahí"
+  },
+  "error.400.cms_path_reserved": {
+    "hash": "2eb24d79870a6748",
+    "text": "Esta dirección está reservada para el blog"
+  },
+  "error.400.cms_publish_at_invalid": {
+    "hash": "4e88446cf694256f",
+    "text": "Elige una hora de publicación en el futuro"
+  },
+  "error.400.cms_redirect_invalid": {
+    "hash": "313f1125628855ff",
+    "text": "La redirección no es válida"
+  },
+  "error.400.cms_site_unknown": {
+    "hash": "82dbb3296b1b12c5",
+    "text": "Sitio desconocido"
+  },
+  "error.400.cms_slug_invalid": {
+    "hash": "7f3010ebdda6a0a2",
+    "text": "La dirección solo puede contener letras, cifras y guiones"
+  },
+  "error.400.cms_tag_unknown": {
+    "hash": "e8a30e7b9df56ef1",
+    "text": "Etiqueta desconocida"
+  },
+  "error.400.cms_template_unknown": {
+    "hash": "95b0486efc521899",
+    "text": "Plantilla de página desconocida"
+  },
+  "error.400.cms_tree_too_deep": {
+    "hash": "d048d266be4325dc",
+    "text": "Las páginas se pueden anidar como máximo {max_depth} niveles"
+  },
+  "error.400.cms_url_unsafe": {
+    "hash": "2e953f8991589198",
+    "text": "Este enlace no está permitido"
+  },
+  "error.404.cms_not_found": {
+    "hash": "a469ab4ca4e55bf5",
+    "text": "Página no encontrada"
+  },
+  "error.404.cms_preview_invalid": {
+    "hash": "6729290c77987f42",
+    "text": "Este enlace de vista previa no es válido o ha caducado"
+  },
+  "error.404.cms_revision_not_found": {
+    "hash": "668704818e735b18",
+    "text": "Revisión no encontrada"
+  },
+  "error.409.cms_delete_published": {
+    "hash": "ceaecb372721456d",
+    "text": "El contenido publicado no se puede eliminar; archívalo"
+  },
+  "error.409.cms_form_unpublished": {
+    "hash": "4871dda5149e3734",
+    "text": "Publica el formulario {form_id} antes que la página que lo incluye"
+  },
+  "error.409.cms_path_taken": {
+    "hash": "32711dc65df8a71d",
+    "text": "Otra página ya usa esta dirección"
+  },
+  "error.409.cms_slug_taken": {
+    "hash": "4629f8c8cd434368",
+    "text": "Esta dirección ya está ocupada"
+  },
+  "error.409.cms_transition_invalid": {
+    "hash": "b97ccc92f9881796",
+    "text": "No se puede pasar de {from} a {to}"
+  },
+  "error.409.cms_variant_exists": {
+    "hash": "fda10a2a59d9ca1a",
+    "text": "Ya existe una versión en este idioma"
+  },
+  "error.409.cms_version_conflict": {
+    "hash": "ff951bf1051dcefe",
+    "text": "Otra persona guardó esto mientras tanto; recarga para ver la versión {current}"
+  },
+  "error.503.cms_translation_unavailable": {
+    "hash": "c318578baab6c17a",
+    "text": "La traducción automática no está disponible en este momento"
+  }
+}

@@ -39,6 +39,8 @@ Pre-1.0 semver: **minor = breaking**, patch = compatible.
   (registered when core has it; publish / unpublish / move drop the site's
   cached sitemaps; hreflang alternates for variant groups);
   `user.merged` consumer; GDPR owner (staff ids pseudonymized, content kept).
+- Error catalogs `translations/errors.{ru,es}.json` (every cms-owned key)
+  and the per-language references `docs/errors.{en,ru,es}.md`.
 - `cms_seed` (about, contacts, terms, privacy, FAQ as drafts),
   `cms_publish_due` and the beat entry, admin, system checks E001–E005,
   W001–W003.
