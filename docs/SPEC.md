@@ -298,6 +298,10 @@ the site registry; migrate from zero; GDPR export + erase; concurrency:
 two PATCHes on one version → one 200 + one 409, revision numbers unique
 under a race; named inversion tests: FSM table, safe-URL payload table,
 block registry merge/remove, architecture grep (no `stapel_*` sibling import).
+`make seam LIBVIPS_DIR=…` boots `e2e/seamhost` with the real stapel-cdn,
+stapel-forms, stapel-translate and core's sitemap aggregator, publishes a
+page with a gallery and a form block, creates a machine-translated variant
+and validates `sitemap.xml` against the sitemaps.org XSD (with `xhtml:link`).
 
 ## 13. Upstream asks
 

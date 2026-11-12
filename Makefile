@@ -8,7 +8,24 @@
 PYTHON ?= python3
 LLMS_BUDGET ?= 6000
 
-.PHONY: contract contract-check migration-lint
+.PHONY: contract contract-check migration-lint seam
+
+# Seam run with the real neighbours installed (stapel-cdn[images], stapel-forms,
+# stapel-translate, a core with stapel_core.django.sitemap, lxml): boots
+# e2e/seamhost on a throwaway database, then publishes, translates and
+# validates sitemap.xml against the sitemaps.org XSD. macOS strips DYLD_* from
+# make and sh: pass the libvips directory as LIBVIPS_DIR=/opt/homebrew/lib.
+SEAM_PYTHON = $(abspath $(shell command -v $(PYTHON)))
+SEAM_ENV = SEAM_DB="$$tmp/db.sqlite3" SEAM_MEDIA="$$tmp/media" DYLD_FALLBACK_LIBRARY_PATH="$(LIBVIPS_DIR)"
+seam:
+	@tmp=$$(mktemp -d); mkdir -p e2e/.xsd; \
+	cp e2e/xhtml-link.xsd e2e/urlset-with-xhtml.xsd e2e/.xsd/; \
+	for f in sitemap.xsd siteindex.xsd; do \
+		[ -s e2e/.xsd/$$f ] || curl -fsS -m 30 -o e2e/.xsd/$$f https://www.sitemaps.org/schemas/sitemap/0.9/$$f || exit 1; \
+	done; \
+	cd e2e && $(SEAM_ENV) $(SEAM_PYTHON) manage.py migrate --run-syncdb -v0 && \
+	$(SEAM_ENV) $(SEAM_PYTHON) manage.py check --fail-level ERROR >/dev/null 2>&1 && \
+	$(SEAM_ENV) $(SEAM_PYTHON) seam_run.py .xsd
 
 contract:
 	$(PYTHON) -m stapel_cms._codegen --out docs

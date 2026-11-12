@@ -21,7 +21,7 @@ def _imports(path):
 def _sources():
     for path in PACKAGE.rglob("*.py"):
         rel = path.relative_to(PACKAGE).parts
-        if rel[0] in ("tests", "build", "dist", ".venv") or ".egg-info" in str(path):
+        if rel[0] in ("tests", "e2e", "build", "dist", ".venv") or ".egg-info" in str(path):
             continue
         yield path
 
