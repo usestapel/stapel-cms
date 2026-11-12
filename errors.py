@@ -21,6 +21,7 @@ ERR_400_MENU_INVALID = "error.400.cms_menu_invalid"
 ERR_400_REDIRECT_INVALID = "error.400.cms_redirect_invalid"
 ERR_400_TAG_UNKNOWN = "error.400.cms_tag_unknown"
 ERR_400_OBJECT_EXPECTED = "error.400.cms_object_expected"
+ERR_400_FORM_UNKNOWN = "error.400.cms_form_unknown"
 ERR_404_NOT_FOUND = "error.404.cms_not_found"
 ERR_404_PREVIEW_INVALID = "error.404.cms_preview_invalid"
 ERR_404_REVISION_NOT_FOUND = "error.404.cms_revision_not_found"
@@ -30,6 +31,7 @@ ERR_409_VERSION_CONFLICT = "error.409.cms_version_conflict"
 ERR_409_TRANSITION_INVALID = "error.409.cms_transition_invalid"
 ERR_409_DELETE_PUBLISHED = "error.409.cms_delete_published"
 ERR_409_VARIANT_EXISTS = "error.409.cms_variant_exists"
+ERR_409_FORM_UNPUBLISHED = "error.409.cms_form_unpublished"
 ERR_503_TRANSLATION_UNAVAILABLE = "error.503.cms_translation_unavailable"
 
 STAPEL_CMS_ERRORS = {
@@ -49,6 +51,7 @@ STAPEL_CMS_ERRORS = {
     ERR_400_REDIRECT_INVALID: "The redirect is invalid",
     ERR_400_TAG_UNKNOWN: "Unknown tag",
     ERR_400_OBJECT_EXPECTED: "This field must be an object",
+    ERR_400_FORM_UNKNOWN: "There is no form {form_id}",
     ERR_404_NOT_FOUND: "Page not found",
     ERR_404_PREVIEW_INVALID: "This preview link is invalid or has expired",
     ERR_404_REVISION_NOT_FOUND: "Revision not found",
@@ -58,6 +61,7 @@ STAPEL_CMS_ERRORS = {
     ERR_409_TRANSITION_INVALID: "Cannot move from {from} to {to}",
     ERR_409_DELETE_PUBLISHED: "Published content cannot be deleted; archive it instead",
     ERR_409_VARIANT_EXISTS: "This language version already exists",
+    ERR_409_FORM_UNPUBLISHED: "Publish the form {form_id} before the page that embeds it",
     ERR_503_TRANSLATION_UNAVAILABLE: "Machine translation is unavailable right now",
 }
 

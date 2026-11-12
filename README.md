@@ -30,7 +30,7 @@ pip install stapel-cms
 | Config axes | 2 |
 | Usage surface | 10 |
 | Extension points | 9 |
-| Error codes | 68 |
+| Error codes | 70 |
 | Documented flows | 4 |
 | Fleet dependencies | [`stapel-cdn`](https://github.com/usestapel/stapel-cdn) (optional) · [`stapel-core`](https://github.com/usestapel/stapel-core) · [`stapel-forms`](https://github.com/usestapel/stapel-forms) (optional) · [`stapel-translate`](https://github.com/usestapel/stapel-translate) (optional) |
 

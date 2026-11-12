@@ -34,7 +34,7 @@ from ..errors import (
 )
 from ..models import Kind, Page, Post, Revision, Status, Tag
 from ..safety import is_media_ref, is_safe_url
-from . import CmsError, cache, events, media, paths, sitemaps
+from . import CmsError, cache, events, forms, media, paths, sitemaps
 
 SEO_FIELDS = ("seo_title", "seo_description", "canonical_url", "og_image", "noindex")
 
@@ -176,6 +176,12 @@ def _public_changed(site: str) -> None:
     sitemaps.invalidate_after_commit(site)
 
 
+def _with_warnings(obj, warnings: list[dict]):
+    """Attach non-blocking findings of this request for the staff response."""
+    obj.cms_warnings = warnings
+    return obj
+
+
 def get(kind: str, obj_id) -> object:
     obj = SPECS[kind].model.objects.select_related("live_revision", "scheduled_revision").filter(pk=obj_id).first()
     if obj is None:
@@ -195,6 +201,7 @@ def _locked(kind: str, obj_id):
 
 def create(kind: str, user, data: dict):
     spec = SPECS[kind]
+    warnings = forms.check_save(data.get("blocks"))
     obj = spec.model(site=data.get("site", ""), locale=data["locale"])
     check_scope(obj.site, obj.locale)
     _clean_common(spec, obj, data)
@@ -219,11 +226,12 @@ def create(kind: str, user, data: dict):
             obj.tags.set(_tags_for(obj, data["tags"]))
         _append_revision(obj, kind, user, "created")
     media.sync_after_commit(obj, kind)
-    return get(kind, obj.pk)
+    return _with_warnings(get(kind, obj.pk), warnings)
 
 
 def update(kind: str, obj_id, user, data: dict):
     spec = SPECS[kind]
+    warnings = forms.check_save(data["blocks"]) if "blocks" in data else []
     with mutate_and_emit() as emit:
         obj = _locked(kind, obj_id)
         expected = data.get("version")
@@ -264,7 +272,7 @@ def update(kind: str, obj_id, user, data: dict):
         if new_path != old_path and serving_revision(obj) is not None:
             _public_changed(obj.site)
     media.sync_after_commit(obj, kind)
-    return get(kind, obj.pk)
+    return _with_warnings(get(kind, obj.pk), warnings)
 
 
 def delete(kind: str, obj_id) -> None:
@@ -287,6 +295,7 @@ def delete(kind: str, obj_id) -> None:
 
 
 def transition(kind: str, obj_id, user, to: str, publish_at=None):
+    warnings = forms.check_publish(get(kind, obj_id).blocks) if to in (fsm.PUBLISHED, fsm.SCHEDULED) else []
     with mutate_and_emit() as emit:
         obj = _locked(kind, obj_id)
         from_status = obj.status
@@ -327,7 +336,7 @@ def transition(kind: str, obj_id, user, to: str, publish_at=None):
                 events.emit_unpublished(emit, obj, kind, public_path(obj))
                 _public_changed(obj.site)
     media.sync_after_commit(obj, kind)
-    return get(kind, obj.pk)
+    return _with_warnings(get(kind, obj.pk), warnings)
 
 
 def _publish(obj, kind, user, emit, now, *, note: str, revision=None) -> None:

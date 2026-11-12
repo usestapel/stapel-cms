@@ -2,7 +2,7 @@
 
 Public site content for a Stapel product: pages in a slug tree, a blog (posts, tags, date and tag archives, RSS/Atom), menus (header/footer trees targeting pages, posts, URLs or named frontend routes), SEO fields and a sitemap Function, and redirects written automatically when a published page or post moves. Bodies are typed block lists (rich_text as a ProseMirror/TipTap JSON document, hero, faq, gallery, embed with a host allowlist, a stapel-forms form by id, an opaque listing_rail query) validated by pydantic models from a MERGE registry, so a project adds its own block without forking. Staff write drafts, preview them by a signed link, publish now or on a schedule, keep editing while the published snapshot serves, restore revisions and archive; every publication is a fact. Content is site-scoped through the stapel-core site registry and locale-scoped with a fallback chain; a page can be copied into another locale, optionally through a machine-translation Function. The anonymous read is cached per site and answers conditional requests (ETag, Last-Modified). Not stapel-docs: docs is private workspace documents; cms is what an anonymous visitor reads at a URL of the site.
 
-Contract: axes 2 · surface 10 · extension points 9 · operations 41 · error codes 68 · flows 4.
+Contract: axes 2 · surface 10 · extension points 9 · operations 41 · error codes 70 · flows 4.
 Generated from docs/capabilities.json by `stapel-llms-txt` — do not edit; drift-gated by `make contract-check`.
 
 ## Configuration axes — what a product switches on
@@ -111,7 +111,7 @@ Paths are relative to `/cms/api/v1/`.
 - GET /staff/tags/ — cms_staff_tags_list
 - PATCH /staff/tags/{tag_id}/ — cms_staff_tags_update
 
-## Error codes (68) — the StapelError envelope
+## Error codes (70) — the StapelError envelope
 Render `t(code, params)`; branch UX on the remediation. Localized text lives in docs/errors.<lang>.md, not here.
 - error.400.bad_request [400] fix_input
 - error.400.captcha_invalid [400] retry
@@ -119,6 +119,7 @@ Render `t(code, params)`; branch UX on the remediation. Localized text lives in 
 - error.400.cms_block_type_unknown [400] fix_input {type}
 - error.400.cms_blocks_invalid [400] fix_input {detail}
 - error.400.cms_blocks_too_large [400] fix_input {max_blocks,max_bytes}
+- error.400.cms_form_unknown [400] fix_input {form_id}
 - error.400.cms_locale_unknown [400] fix_input
 - error.400.cms_menu_invalid [400] fix_input {detail}
 - error.400.cms_object_expected [400] fix_input
@@ -164,6 +165,7 @@ Render `t(code, params)`; branch UX on the remediation. Localized text lives in 
 - error.406.not_acceptable [406] retry
 - error.408.request_timeout [408] retry
 - error.409.cms_delete_published [409] fix_input
+- error.409.cms_form_unpublished [409] fix_input {form_id}
 - error.409.cms_path_taken [409] fix_input
 - error.409.cms_slug_taken [409] fix_input
 - error.409.cms_transition_invalid [409] fix_input {from,to}

@@ -105,10 +105,12 @@ CODEGEN_SCHEMA_PATH_PREFIX = "/"
 def enum_name_overrides() -> dict:
     """Stable enum component names (stapel-schema-lint SCH004)."""
     from stapel_cms.models import RedirectSource, Status, TargetType
+    from stapel_cms.serializers import CONTENT_WARNING_CODES
 
     return {
         "CmsStatusEnum": Status,
         "CmsResolveKindEnum": [("page", "page"), ("post", "post"), ("redirect", "redirect")],
         "CmsMenuTargetEnum": TargetType,
         "CmsRedirectSourceEnum": RedirectSource,
+        "CmsContentWarningCodeEnum": CONTENT_WARNING_CODES,
     }

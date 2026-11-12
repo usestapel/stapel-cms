@@ -2163,6 +2163,14 @@
           "title"
         ]
       },
+      "CmsContentWarningCodeEnum": {
+        "enum": [
+          "form_unpublished",
+          "form_unverified"
+        ],
+        "type": "string",
+        "description": "* `form_unpublished` - form_unpublished\n* `form_unverified` - form_unverified"
+      },
       "CmsMenuTargetEnum": {
         "enum": [
           "page",
@@ -2199,6 +2207,34 @@
         ],
         "type": "string",
         "description": "* `draft` - Draft\n* `scheduled` - Scheduled\n* `published` - Published\n* `archived` - Archived"
+      },
+      "ContentWarning": {
+        "type": "object",
+        "description": "A non-blocking finding of this save or publish (not stored).",
+        "properties": {
+          "code": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CmsContentWarningCodeEnum"
+              }
+            ],
+            "description": "form_unpublished: the embedded form exists but is not published (publishing the page will be refused); form_unverified: stapel-forms could not be asked, only the shape was checked.\n\n* `form_unpublished` - form_unpublished\n* `form_unverified` - form_unverified"
+          },
+          "field": {
+            "type": "string",
+            "description": "Path of the field, e.g. blocks.2.data.form_id.",
+            "maxLength": 200
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "code",
+          "field",
+          "params"
+        ]
       },
       "MenuItemInput": {
         "type": "object",
@@ -3261,6 +3297,13 @@
             "type": "string",
             "format": "date-time"
           },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentWarning"
+            },
+            "description": "Findings of this request only; empty on reads."
+          },
           "parent": {
             "type": "integer",
             "nullable": true
@@ -3298,7 +3341,8 @@
           "translation_group",
           "updated_at",
           "updated_by_id",
-          "version"
+          "version",
+          "warnings"
         ]
       },
       "StaffPageCreateRequest": {
@@ -3514,6 +3558,13 @@
             "type": "string",
             "format": "date-time"
           },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContentWarning"
+            },
+            "description": "Findings of this request only; empty on reads."
+          },
           "excerpt": {
             "type": "string",
             "maxLength": 500
@@ -3563,7 +3614,8 @@
           "translation_group",
           "updated_at",
           "updated_by_id",
-          "version"
+          "version",
+          "warnings"
         ]
       },
       "StaffPostCreateRequest": {

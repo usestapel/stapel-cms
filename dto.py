@@ -121,6 +121,7 @@ class StaffContentDTO:
     cover: str = ""
     tags: list = field(default_factory=list)
     reading_time_minutes: int = 1
+    warnings: list = field(default_factory=list)
 
 
 @dataclass

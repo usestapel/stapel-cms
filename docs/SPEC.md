@@ -98,7 +98,7 @@ knows the shapes.
 | `faq` | `{title? ≤200, items[≤100]: {question ≤300, answer: RichDoc}}` |
 | `gallery` | `{layout: grid/carousel, items[1..60]: {media (cdn ref), alt ≤300, caption? ≤300}}` |
 | `embed` | `{url (https, host in EMBED_HOSTS), title ≤200, aspect_ratio: 16:9/4:3/1:1/9:16}` |
-| `form` | `{form_id (stapel-forms public_id ≤32), title? ≤200}` |
+| `form` | `{form_id (stapel-forms public_id ≤32), title? ≤200}` — checked through `forms.form.exists` (`FORM_EXISTS_FUNCTION`): unknown → `400 error.400.cms_form_unknown {field, form_id}` on save; unpublished → allowed in a draft with a `form_unpublished` warning, `409 error.409.cms_form_unpublished` on publish or schedule; Function unreachable → shape check only plus a `form_unverified` warning (never a 500). Staff content responses carry `warnings: [{code, field, params}]` of that request (empty on reads). |
 | `listing_rail` | `{title? ≤200, source ≤32 (e.g. "listings"), query: opaque JSON object ≤2 KiB, limit 1..24}` — cms never interprets `query`; the pair hands it to the named source's hook |
 
 A media reference is a stapel-cdn ref `<type>/<id>` (opaque). On save cms
@@ -304,6 +304,6 @@ block registry merge/remove, architecture grep (no `stapel_*` sibling import).
 | Id | Repo | Ask |
 |---|---|---|
 | T1 | stapel-translate | a content Function (`translate.text {texts, source, target}` → `{texts}`) behind `MACHINE_TRANSLATE` — built; cms chunks to its bounds |
-| F1 | stapel-forms | a public `forms.form.exists {public_id}` Function so the `form` block can be validated at save time (today: shape only) |
+| F1 | stapel-forms | a public `forms.form.exists {public_id}` Function so the `form` block can be validated at save time — built; cms checks on save and publish |
 | X1 | stapel-tools | `STAPEL_LIBS["cms"]` (url_prefix `cms/api/`, beat `stapel_cms.beat.get_cms_beat_schedule`), `_gdpr_owners.py` += `cms: ["account"]` |
 | S1 | stapel-core | a site-scoped sitemap aggregator that asks `<module>.sitemap_entries` Functions — built (`stapel_core.django.sitemap`); cms registers with it and invalidates it |

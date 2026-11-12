@@ -43,3 +43,4 @@ MERGES over the built-in block types; every other key replaces its default.
 | MACHINE_TRANSLATE_MAX_TEXT_CHARS | env | chars per text the translation Function accepts; longer rich-text leaves are split at sentence boundaries and rejoined. | no | 5000 |
 | MACHINE_TRANSLATE_MAX_ITEMS | env | texts per translation call. | no | 2000 |
 | MACHINE_TRANSLATE_MAX_CHARS | env | chars per translation call. | no | 200000 |
+| FORM_EXISTS_FUNCTION | env | comm Function `{public_id}` → `{exists, published}` checking a form block on save (unknown refused) and publish (unpublished refused); unreachable = shape check plus a warning; empty disables. | no | forms.form.exists |

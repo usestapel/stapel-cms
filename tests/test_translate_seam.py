@@ -86,6 +86,7 @@ PAGE_BLOCKS = [
 
 @requires("stapel_translate")
 def test_a_real_page_is_translated_node_by_node(staff_client, settings, real_translate):
+    settings.STAPEL_CMS = {**settings.STAPEL_CMS, "FORM_EXISTS_FUNCTION": ""}
     page = make_page(staff_client, "about", title="About", seo_description="Who we are", blocks=PAGE_BLOCKS)
     resp = _variant(staff_client, page["id"])
     assert resp.status_code == 201, resp.content

@@ -55,6 +55,16 @@
     "owner": "stapel_cms"
   },
   {
+    "code": "error.400.cms_form_unknown",
+    "status": 400,
+    "params": [
+      "form_id"
+    ],
+    "remediation": "fix_input",
+    "en": "There is no form {form_id}",
+    "owner": "stapel_cms"
+  },
+  {
     "code": "error.400.cms_locale_unknown",
     "status": 400,
     "params": [],
@@ -442,6 +452,16 @@
     "params": [],
     "remediation": "fix_input",
     "en": "Published content cannot be deleted; archive it instead",
+    "owner": "stapel_cms"
+  },
+  {
+    "code": "error.409.cms_form_unpublished",
+    "status": 409,
+    "params": [
+      "form_id"
+    ],
+    "remediation": "fix_input",
+    "en": "Publish the form {form_id} before the page that embeds it",
     "owner": "stapel_cms"
   },
   {

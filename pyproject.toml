@@ -55,6 +55,8 @@ test = [
     # The machine-translation seam is proved against the real provider:
     # `translate.text` first ships after 0.8.5.
     "stapel-translate>0.8.5,<1",
+    # The form-block seam: `forms.form.exists` first ships after 0.6.3.
+    "stapel-forms>0.6.3,<1",
 ]
 
 [tool.setuptools]

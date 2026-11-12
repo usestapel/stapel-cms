@@ -62,6 +62,9 @@ DEFAULTS = {
     "HTTP_MAX_AGE": 60,
     # comm Function keeping cdn's media references; empty disables.
     "MEDIA_REFS_FUNCTION": "cdn.refs_sync",
+    # comm Function checking a form block's reference ({public_id} ->
+    # {exists, published}); empty = shape check only.
+    "FORM_EXISTS_FUNCTION": "forms.form.exists",
     # comm Function translating text batches ({texts, source, target} ->
     # {texts}); empty = machine translation is off.
     "MACHINE_TRANSLATE": "",

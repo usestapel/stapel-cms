@@ -180,6 +180,20 @@ class PublicMenuSerializer(serializers.Serializer):
 # ── Staff: pages and posts ─────────────────────────────────────────────────
 
 
+CONTENT_WARNING_CODES = [("form_unpublished", "form_unpublished"), ("form_unverified", "form_unverified")]
+
+
+class ContentWarningSerializer(serializers.Serializer):
+    """A non-blocking finding of this save or publish (not stored)."""
+
+    code = serializers.ChoiceField(
+        choices=CONTENT_WARNING_CODES,
+        help_text="form_unpublished: the embedded form exists but is not published (publishing the page "
+                  "will be refused); form_unverified: stapel-forms could not be asked, only the shape was checked.")
+    field = serializers.CharField(max_length=200, help_text="Path of the field, e.g. blocks.2.data.form_id.")
+    params = ObjectField()
+
+
 class _StaffContentSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     site = serializers.CharField(max_length=m.SITE_MAX_LENGTH, allow_blank=True)
@@ -207,6 +221,7 @@ class _StaffContentSerializer(serializers.Serializer):
     has_unpublished_changes = serializers.BooleanField()
     created_at = _dt()
     updated_at = _dt()
+    warnings = ContentWarningSerializer(many=True, help_text="Findings of this request only; empty on reads.")
 
 
 class StaffPageSerializer(_StaffContentSerializer):

@@ -79,7 +79,8 @@ class StaffPresenter:
             live_revision=obj.live_revision.number if obj.live_revision_id else None,
             scheduled_revision=obj.scheduled_revision.number if obj.scheduled_revision_id else None,
             has_unpublished_changes=has_unpublished_changes(obj),
-            created_at=obj.created_at, updated_at=obj.updated_at, **extra,
+            created_at=obj.created_at, updated_at=obj.updated_at,
+            warnings=list(getattr(obj, "cms_warnings", None) or []), **extra,
         )
 
     def revision(self, revision, obj) -> RevisionDTO:

@@ -50,6 +50,7 @@ CELERY_BEAT_SCHEDULE = {**get_cms_beat_schedule()} # stapel_cms.beat; or `manage
 | `MACHINE_TRANSLATE` | `""` | comm Function name, e.g. `"translate.text"` (contract `schemas/functions/machine_translate.json`) |
 | `MACHINE_TRANSLATE_TIMEOUT_SECONDS`, `MACHINE_TRANSLATE_MAX_TEXT_CHARS` / `_MAX_ITEMS` / `_MAX_CHARS` | `300`, `5000` / `2000` / `200000` | per-call timeout; the Function's bounds cms chunks to |
 | `MEDIA_REFS_FUNCTION` | `"cdn.refs_sync"` | comm Function name; empty disables |
+| `FORM_EXISTS_FUNCTION` | `"forms.form.exists"` | form block check: unknown refused on save, unpublished refused on publish; unreachable = shape only + `form_unverified` warning; empty disables |
 | limits, cache, preview | see CONFIG.MD | replace |
 
 ### Block registry (`blocks.py`)
@@ -83,7 +84,7 @@ Every view inherits `StapelAPIView`; subclass it, set
 | Function (provides) | `cms.sitemap_entries {site?, locale?, cursor?, limit?}` → `{entries, cursor}` — a stapel-core sitemap provider | `schemas/functions/cms.sitemap_entries.json` |
 | Function (provides) | `cms.resolve_path {site, locale, path}` → `{found, kind, id, locale, title, path}` | `schemas/functions/cms.resolve_path.json` |
 | Function (provides) | `cms.feed {site, locale, type}` → `{content_type, body}` | `schemas/functions/cms.feed.json` |
-| Function (calls, optional) | `MACHINE_TRANSLATE`, `MEDIA_REFS_FUNCTION` | `schemas/functions/machine_translate.json`; cdn's own |
+| Function (calls, optional) | `MACHINE_TRANSLATE`, `MEDIA_REFS_FUNCTION`, `FORM_EXISTS_FUNCTION` (`forms.form.exists`) | `schemas/functions/machine_translate.json`; cdn's and forms' own |
 | Action (emits) | `cms.page.published`, `cms.page.unpublished`, `cms.post.published`, `cms.post.unpublished`, `cms.menu.changed`, `cms.redirect.created` | `schemas/emits/` |
 | Action (consumes) | `user.merged` (authorship ids follow the survivor) | `schemas/consumes/user.merged.json` |
 

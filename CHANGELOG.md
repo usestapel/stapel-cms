@@ -15,7 +15,10 @@ Pre-1.0 semver: **minor = breaking**, patch = compatible.
 - Typed block registry (MERGE over built-ins `rich_text`, `hero`, `faq`,
   `gallery`, `embed`, `form`, `listing_rail`) validated by pydantic models;
   rich text is a ProseMirror/TipTap JSON document; one safe-URL rule for
-  every link; embed host allowlist.
+  every link; embed host allowlist; the `form` block is checked through
+  stapel-forms' `forms.form.exists` (unknown refused on save, unpublished
+  refused on publish, unreachable = shape check plus a staff `warnings`
+  entry).
 - Workflow draft → scheduled → published → archived with full-snapshot
   revisions and restore, signed preview tokens, optimistic lock on
   `version`; the public reads the published snapshot only.

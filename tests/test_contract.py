@@ -28,7 +28,7 @@ LLMS_TXT_BUDGET = "6000"
 #: The codegen contract the react pair generates from (docs/SPEC.md §8).
 STABLE_COMPONENTS = {
     "Alternate", "ArchiveMonth", "Block", "BlockType", "BlockTypeList", "Breadcrumb", "CmsMenuTargetEnum",
-    "CmsRedirectSourceEnum", "CmsResolveKindEnum", "CmsStatusEnum", "MenuItemInput",
+    "CmsRedirectSourceEnum", "CmsResolveKindEnum", "CmsStatusEnum", "CmsContentWarningCodeEnum", "ContentWarning", "MenuItemInput",
     "PatchedStaffPageUpdateRequest", "PatchedStaffPostUpdateRequest", "PatchedStaffTagUpdateRequest",
     "PostArchiveResponse", "PreviewTokenResponse", "PublicMenu", "PublicMenuItem", "PublicPage", "PublicPost",
     "PublicPostPage", "PublicPostSummary", "PublicTag", "PublicTagList", "RedirectTarget", "ResolveResponse",
