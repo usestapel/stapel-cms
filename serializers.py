@@ -37,7 +37,8 @@ def _dt(**kwargs):
 
 
 def _site():
-    return serializers.CharField(max_length=m.SITE_MAX_LENGTH, allow_blank=True, default="")
+    return serializers.CharField(max_length=m.SITE_MAX_LENGTH, allow_blank=True, required=False,
+                                 help_text="Site key; omitted = \"\" (the single-host site).")
 
 
 def _locale():
@@ -281,8 +282,9 @@ class _ContentWriteSerializer(serializers.Serializer):
 class StaffPageCreateRequestSerializer(_ContentWriteSerializer):
     site = _site()
     locale = _locale()
-    parent = serializers.IntegerField(allow_null=True, required=False, default=None)
-    template = serializers.CharField(max_length=m.TEMPLATE_MAX_LENGTH, default="default")
+    parent = serializers.IntegerField(allow_null=True, required=False, help_text="Omitted = a top-level page.")
+    template = serializers.CharField(max_length=m.TEMPLATE_MAX_LENGTH, required=False,
+                                     help_text="PAGE_TEMPLATES key; omitted = \"default\".")
 
 
 class StaffPageUpdateRequestSerializer(_ContentWriteSerializer):
@@ -343,7 +345,7 @@ class PreviewTokenResponseSerializer(serializers.Serializer):
 
 class VariantRequestSerializer(serializers.Serializer):
     locale = _locale()
-    machine_translate = serializers.BooleanField(default=False)
+    machine_translate = serializers.BooleanField(required=False, help_text="Omitted = false.")
 
 
 # ── Staff: tags, menus, redirects, block types ─────────────────────────────
@@ -382,7 +384,7 @@ class MenuItemInputSerializer(serializers.Serializer):
     url = serializers.CharField(max_length=m.URL_MAX_LENGTH, required=False, allow_null=True, allow_blank=True)
     route = serializers.CharField(max_length=m.ROUTE_MAX_LENGTH, required=False, allow_null=True, allow_blank=True)
     route_params = ObjectField(required=False)
-    new_tab = serializers.BooleanField(required=False, default=False)
+    new_tab = serializers.BooleanField(required=False, help_text="Omitted = false.")
 
     def get_fields(self):
         fields = super().get_fields()
@@ -421,7 +423,8 @@ class StaffMenuCreateRequestSerializer(serializers.Serializer):
     site = _site()
     locale = _locale()
     key = serializers.CharField(max_length=m.MENU_KEY_MAX_LENGTH)
-    title = serializers.CharField(max_length=m.TITLE_MAX_LENGTH, allow_blank=True, default="")
+    title = serializers.CharField(max_length=m.TITLE_MAX_LENGTH, allow_blank=True, required=False,
+                                  help_text="Staff-facing name; omitted = \"\".")
     items = MenuItemInputSerializer(many=True, required=False)
 
 
@@ -451,7 +454,7 @@ class StaffRedirectCreateRequestSerializer(serializers.Serializer):
     locale = _locale()
     old_path = serializers.CharField(max_length=m.PATH_MAX_LENGTH)
     new_path = serializers.CharField(max_length=m.PATH_MAX_LENGTH)
-    permanent = serializers.BooleanField(default=True)
+    permanent = serializers.BooleanField(required=False, help_text="301 when true; omitted = true.")
 
 
 class StaffRedirectPageSerializer(_AnchorPage):

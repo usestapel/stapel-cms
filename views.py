@@ -520,7 +520,8 @@ class StaffPageVariantView(_ContentMixin, _StaffView):
     @flow_step(AUTHOR, order=11, note="Copy the page into another language, optionally machine-translated")
     def post(self, request, obj_id):
         data = self.validated_request_data(request)
-        obj = content.create_variant(self.kind, obj_id, request.user, data["locale"], data["machine_translate"])
+        obj = content.create_variant(self.kind, obj_id, request.user, data["locale"],
+                                     bool(data.get("machine_translate", False)))
         return self._one(obj, 201)
 
 
@@ -630,7 +631,8 @@ class StaffPostVariantView(_ContentMixin, _StaffView):
     @flow_step(AUTHOR, order=23, note="Copy the post into another language")
     def post(self, request, obj_id):
         data = self.validated_request_data(request)
-        obj = content.create_variant(self.kind, obj_id, request.user, data["locale"], data["machine_translate"])
+        obj = content.create_variant(self.kind, obj_id, request.user, data["locale"],
+                                     bool(data.get("machine_translate", False)))
         return self._one(obj, 201)
 
 

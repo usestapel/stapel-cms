@@ -2328,7 +2328,7 @@
           },
           "new_tab": {
             "type": "boolean",
-            "default": false
+            "description": "Omitted = false."
           },
           "children": {
             "type": "array",
@@ -3145,7 +3145,7 @@
         "properties": {
           "site": {
             "type": "string",
-            "default": "",
+            "description": "Site key; omitted = \"\" (the single-host site).",
             "maxLength": 64
           },
           "locale": {
@@ -3158,7 +3158,7 @@
           },
           "title": {
             "type": "string",
-            "default": "",
+            "description": "Staff-facing name; omitted = \"\".",
             "maxLength": 200
           },
           "items": {
@@ -3487,7 +3487,7 @@
           },
           "site": {
             "type": "string",
-            "default": "",
+            "description": "Site key; omitted = \"\" (the single-host site).",
             "maxLength": 64
           },
           "locale": {
@@ -3496,11 +3496,12 @@
           },
           "parent": {
             "type": "integer",
-            "nullable": true
+            "nullable": true,
+            "description": "Omitted = a top-level page."
           },
           "template": {
             "type": "string",
-            "default": "default",
+            "description": "PAGE_TEMPLATES key; omitted = \"default\".",
             "maxLength": 64
           }
         },
@@ -3760,7 +3761,7 @@
           },
           "site": {
             "type": "string",
-            "default": "",
+            "description": "Site key; omitted = \"\" (the single-host site).",
             "maxLength": 64
           },
           "locale": {
@@ -3887,7 +3888,7 @@
         "properties": {
           "site": {
             "type": "string",
-            "default": "",
+            "description": "Site key; omitted = \"\" (the single-host site).",
             "maxLength": 64
           },
           "locale": {
@@ -3904,7 +3905,7 @@
           },
           "permanent": {
             "type": "boolean",
-            "default": true
+            "description": "301 when true; omitted = true."
           }
         },
         "required": [
@@ -3993,7 +3994,7 @@
         "properties": {
           "site": {
             "type": "string",
-            "default": "",
+            "description": "Site key; omitted = \"\" (the single-host site).",
             "maxLength": 64
           },
           "locale": {
@@ -4149,7 +4150,7 @@
           },
           "machine_translate": {
             "type": "boolean",
-            "default": false
+            "description": "Omitted = false."
           }
         },
         "required": [

@@ -138,3 +138,11 @@ def test_public_reads_declare_304():
 def test_flows_document_the_site():
     flows = {f["id"] for f in json.loads((DOCS / "flows.json").read_text())}
     assert {"cms.read", "cms.blog", "cms.author", "cms.site"} <= flows
+
+
+def test_no_request_field_carries_a_schema_default():
+    """openapi-typescript makes a defaulted property non-optional; server defaults live in the services."""
+    offenders = [f"{name}.{prop}" for name, comp in _schema()["components"]["schemas"].items()
+                 if name.endswith(("Request", "Input"))
+                 for prop, spec in comp.get("properties", {}).items() if "default" in spec]
+    assert offenders == []
