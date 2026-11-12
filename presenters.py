@@ -37,8 +37,11 @@ class PublicPresenter:
     """Service dicts of the public read side -> DTOs."""
 
     def resolve(self, data: dict) -> ResolveDTO:
+        from .conf import cms_settings
+
         return ResolveDTO(kind=data["kind"], locale=data["locale"], page=data.get("page"),
-                          post=data.get("post"), redirect=data.get("redirect"))
+                          post=data.get("post"), redirect=data.get("redirect"),
+                          meta={"embed_hosts": [str(h) for h in cms_settings.EMBED_HOSTS or []]})
 
     def post(self, data: dict) -> PublicPostDTO:
         return PublicPostDTO(**data)

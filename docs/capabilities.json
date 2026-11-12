@@ -52,6 +52,29 @@
         "summary": "staff (default): every staff account may edit pages, posts and menus. model_perms: a staff account also needs the per-model permission its role grants (the @access mandate), e.g. to let marketing edit posts but not legal pages' menus. Values: staff, model_perms.",
         "business_label": "Who may edit the site"
       }
+    },
+    {
+      "key": "EMBED_HOSTS",
+      "kind": "list",
+      "default": [
+        "www.youtube.com",
+        "youtube.com",
+        "www.youtube-nocookie.com",
+        "player.vimeo.com",
+        "vimeo.com",
+        "www.google.com",
+        "maps.google.com"
+      ],
+      "group": "cms.embed",
+      "gates": {
+        "operations": [],
+        "co_gates": [],
+        "behavior": "Saving an embed block on another host is refused; every public resolve answer publishes the list as meta.embed_hosts so the renderer's client-side allowlist equals the server's."
+      },
+      "curated": {
+        "summary": "The exact hosts an embed block may point at (https only). Default: YouTube (incl. nocookie), Vimeo, Google Maps. Replace the list to allow another provider.",
+        "business_label": "Which embeds the site renders"
+      }
     }
   ],
   "extension_points": [

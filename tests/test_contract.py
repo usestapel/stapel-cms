@@ -31,7 +31,7 @@ STABLE_COMPONENTS = {
     "CmsRedirectSourceEnum", "CmsResolveKindEnum", "CmsStatusEnum", "CmsContentWarningCodeEnum", "ContentWarning", "MenuItemInput",
     "PatchedStaffPageUpdateRequest", "PatchedStaffPostUpdateRequest", "PatchedStaffTagUpdateRequest",
     "PostArchiveResponse", "PreviewTokenResponse", "PublicMenu", "PublicMenuItem", "PublicPage", "PublicPost",
-    "PublicPostPage", "PublicPostSummary", "PublicTag", "PublicTagList", "RedirectTarget", "ResolveResponse",
+    "PublicPostPage", "PublicPostSummary", "PublicTag", "PublicTagList", "RedirectTarget", "ResolveMeta", "ResolveResponse",
     "Revision", "RevisionPage", "Seo", "StaffMenu", "StaffMenuCreateRequest", "StaffMenuItem", "StaffMenuPage",
     "StaffMenuReplaceRequest", "StaffPage", "StaffPageCreateRequest", "StaffPagePage", "StaffPost",
     "StaffPostCreateRequest", "StaffPostPage", "StaffRedirect", "StaffRedirectCreateRequest", "StaffRedirectPage",

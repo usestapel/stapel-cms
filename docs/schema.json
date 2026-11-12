@@ -2840,6 +2840,23 @@
           "to"
         ]
       },
+      "ResolveMeta": {
+        "type": "object",
+        "description": "Server facts a renderer needs next to the content.",
+        "properties": {
+          "embed_hosts": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 253
+            },
+            "description": "EMBED_HOSTS: the exact hosts an embed block may use (https only); the client-side embed allowlist should equal this."
+          }
+        },
+        "required": [
+          "embed_hosts"
+        ]
+      },
       "ResolveResponse": {
         "type": "object",
         "properties": {
@@ -2873,11 +2890,15 @@
               }
             ],
             "nullable": true
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ResolveMeta"
           }
         },
         "required": [
           "kind",
           "locale",
+          "meta",
           "page",
           "post",
           "redirect"

@@ -118,12 +118,22 @@ class RedirectTargetSerializer(serializers.Serializer):
     permanent = serializers.BooleanField()
 
 
+class ResolveMetaSerializer(serializers.Serializer):
+    """Server facts a renderer needs next to the content."""
+
+    embed_hosts = serializers.ListField(
+        child=serializers.CharField(max_length=253),
+        help_text="EMBED_HOSTS: the exact hosts an embed block may use (https only); the client-side "
+                  "embed allowlist should equal this.")
+
+
 class ResolveResponseSerializer(serializers.Serializer):
     kind = serializers.ChoiceField(choices=["page", "post", "redirect"])
     locale = serializers.CharField(max_length=m.LOCALE_MAX_LENGTH)
     page = PublicPageSerializer(allow_null=True)
     post = PublicPostSerializer(allow_null=True)
     redirect = RedirectTargetSerializer(allow_null=True)
+    meta = ResolveMetaSerializer()
 
 
 class _AnchorPage(serializers.Serializer):

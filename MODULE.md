@@ -46,7 +46,8 @@ CELERY_BEAT_SCHEDULE = {**get_cms_beat_schedule()} # stapel_cms.beat; or `manage
 | `BLOG_ENABLED` | `True` | axis; False unmounts the blog routes (`urls_v1.GATE_REGISTRY`) |
 | `STAFF_AUTHZ` | `"staff"` | axis; `"model_perms"` adds the `@access` mandate per model |
 | `LOCALES` / `DEFAULT_LOCALE` / `LOCALE_FALLBACKS` | `["en"]` / `"en"` / `{}` | replace |
-| `EMBED_HOSTS`, `PAGE_TEMPLATES`, `BLOG_PATH_PREFIX` | see CONFIG.MD | replace |
+| `EMBED_HOSTS` | YouTube, Vimeo, Google Maps hosts | axis; replace; published to clients as `meta.embed_hosts` of every resolve answer |
+| `PAGE_TEMPLATES`, `BLOG_PATH_PREFIX` | see CONFIG.MD | replace |
 | `MACHINE_TRANSLATE` | `""` | comm Function name, e.g. `"translate.text"` (contract `schemas/functions/machine_translate.json`) |
 | `MACHINE_TRANSLATE_TIMEOUT_SECONDS`, `MACHINE_TRANSLATE_MAX_TEXT_CHARS` / `_MAX_ITEMS` / `_MAX_CHARS` | `300`, `5000` / `2000` / `200000` | per-call timeout; the Function's bounds cms chunks to |
 | `MEDIA_REFS_FUNCTION` | `"cdn.refs_sync"` | comm Function name; empty disables |

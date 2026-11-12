@@ -11,9 +11,10 @@ def main(argv=None):
     from stapel_cms.conf import DEFAULTS
     from stapel_cms.urls import GATE_REGISTRY
 
-    # Two CTO-facing axes: BLOG_ENABLED (unmounts the blog routes) and
-    # STAFF_AUTHZ (who may edit). BLOCK_TYPES is the extension seam.
-    axes = {"BLOG_ENABLED", "STAFF_AUTHZ"}
+    # CTO-facing axes: BLOG_ENABLED (unmounts the blog routes), STAFF_AUTHZ
+    # (who may edit) and EMBED_HOSTS (which embeds render; published to
+    # clients in the resolve answer's meta). BLOCK_TYPES is the extension seam.
+    axes = {"BLOG_ENABLED", "STAFF_AUTHZ", "EMBED_HOSTS"}
     return run_capabilities_cli(
         argv,
         repo=Path(__file__).resolve().parent,
@@ -21,7 +22,8 @@ def main(argv=None):
         defaults=DEFAULTS,
         registry=GATE_REGISTRY,
         is_axis=lambda k: k in axes,
-        axis_group=axis_group_rules(exact={"BLOG_ENABLED": "cms.blog", "STAFF_AUTHZ": "cms.staff"}),
+        axis_group=axis_group_rules(exact={"BLOG_ENABLED": "cms.blog", "STAFF_AUTHZ": "cms.staff",
+                                           "EMBED_HOSTS": "cms.embed"}),
         prog="stapel-cms-capabilities",
     )
 

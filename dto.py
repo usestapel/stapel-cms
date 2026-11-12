@@ -21,6 +21,7 @@ class ResolveDTO:
     page: Optional[dict] = None
     post: Optional[dict] = None
     redirect: Optional[dict] = None
+    meta: dict = field(default_factory=dict)
 
 
 @dataclass

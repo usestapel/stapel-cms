@@ -27,7 +27,7 @@ pip install stapel-cms
 | Version | `0.1.0` |
 | Python | `>=3.11` (3.11, 3.12, 3.13, 3.14) |
 | HTTP operations | 41 |
-| Config axes | 2 |
+| Config axes | 3 |
 | Usage surface | 10 |
 | Extension points | 9 |
 | Error codes | 70 |
@@ -36,7 +36,7 @@ pip install stapel-cms
 
 ## Documentation
 
-[OpenAPI](https://github.com/usestapel/stapel-cms/blob/main/docs/schema.json) · [capabilities.json](https://github.com/usestapel/stapel-cms/blob/main/docs/capabilities.json) · [llms.txt (for agents)](https://github.com/usestapel/stapel-cms/blob/main/docs/llms.txt)
+**Errors:** [English](https://github.com/usestapel/stapel-cms/blob/main/docs/errors.en.md) · [Español](https://github.com/usestapel/stapel-cms/blob/main/docs/errors.es.md) · [Русский](https://github.com/usestapel/stapel-cms/blob/main/docs/errors.ru.md) · [OpenAPI](https://github.com/usestapel/stapel-cms/blob/main/docs/schema.json) · [capabilities.json](https://github.com/usestapel/stapel-cms/blob/main/docs/capabilities.json) · [llms.txt (for agents)](https://github.com/usestapel/stapel-cms/blob/main/docs/llms.txt)
 
 ## What this is
 
