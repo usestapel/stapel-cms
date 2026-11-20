@@ -1,6 +1,6 @@
 # Errors — Español
 
-`111` error keys. Canonical texts live in the code (`register_service_errors`); localized texts in `translations/errors.es.json`.
+`112` error keys. Canonical texts live in the code (`register_service_errors`); localized texts in `translations/errors.es.json`.
 
 | Código | Estado | Parámetros | Acción | Texto |
 |---|---|---|---|---|
@@ -63,6 +63,7 @@
 | `error.400.forms_too_many_open` | 400 | — | `contact_support` | Este espacio de trabajo ya tiene el número máximo de formularios abiertos |
 | `error.400.forms_unknown_field` | 400 | — | `fix_input` | La respuesta contiene un campo que el formulario no tiene |
 | `error.400.invalid_ad_id` | 400 | — | `fix_input` | ID de anuncio no válido |
+| `error.400.too_many_ids` | 400 | `requested`, `limit` | `fix_input` | Demasiados identificadores: {requested} solicitados, como máximo {limit} por solicitud por lotes |
 | `error.400.translate.batch_too_large` | 400 | `max_items` | `fix_input` | Un lote admite como máximo {max_items} textos |
 | `error.400.translate.batch_too_long` | 400 | `max_chars` | `fix_input` | El lote supera los {max_chars} caracteres en total |
 | `error.400.translate.text_required` | 400 | — | `fix_input` | Indica un texto o una lista de textos no vacía |
@@ -107,7 +108,7 @@
 | `error.422.unprocessable_entity` | 422 | — | `wait_and_retry` | Entidad no procesable |
 | `error.423.locked` | 423 | — | `wait_and_retry` | El recurso está bloqueado |
 | `error.423.verification_locked` | 423 | — | `wait_and_retry` | Demasiados intentos fallidos — verificación bloqueada |
-| `error.429.rate_limit` | 429 | `retry_after_minutes` | `wait_and_retry` | Demasiados intentos. Inténtalo de nuevo en {retry_after_minutes} minutos. |
+| `error.429.rate_limit` | 429 | `retry_after_display`, `retry_after`, `retry_after_minutes` | `wait_and_retry` | Demasiados intentos. Inténtalo de nuevo en {retry_after_display} ({retry_after} s, unos {retry_after_minutes} min). |
 | `error.429.too_many_requests` | 429 | — | `wait_and_retry` | Demasiadas solicitudes. Inténtalo de nuevo más tarde. |
 | `error.500.internal` | 500 | — | `contact_support` | Algo salió mal |
 | `error.502.translate.provider_unavailable` | 502 | — | `retry` | El servicio de traducción no está disponible |
